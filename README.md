@@ -1,7 +1,9 @@
 <h2>Soap-Sender 主页</h2>
 
-构建
-> npm run pkwin64
+构建 app
+> 安装 electron-packager
+
+> 在client文件夹内运行 npm run pkwin64
 
 ----------
 
