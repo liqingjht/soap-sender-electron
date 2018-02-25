@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>新文档</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>Soap-Sender 主页</h2>
+<p>最新版本： 1.0.1</p>
+<p><a href="getNewTool?version=1.0.1&type=32" title="32位下载地址">Windows 32位下载地址</a></p>
+<p><a href="getNewTool?version=1.0.1&type=64" title="64位下载地址">Windows 64位下载地址</a></p>
+<blockquote>
+<p>1.0.1 更新记录</p>
+<ol>
+<li>优化基本设置页面判断 IP 和密码的响应时间</li>
+<li>保存基本设置页面的设置</li>
+<li>历史记录添加 Response Time 的排序</li>
+<li>历史记录添加删除按钮</li>
+<li>历史记录添加导入数据到发送页面</li>
+<li>历史记录添加 Response Code 0 和非 0 的颜色区分</li>
+<li>添加检查新版本</li>
+</ol>
+</blockquote>
+<hr />
+<p>使用说明：</p>
+<ol>
+<li>
+<p><strong>下载和使用</strong></p>
+<p>1-1. 软件下载后 .zip 后缀，解压缩后得到一个 exe 自解压文件。双击 exe 文件解压后得到一个文件夹。运行文件夹里面 Soap-Sender.exe 文件就可以使用软件。你也可以对这个文件做一个快捷方式。</p>
+<p>1-2. 如果你更新了软件，但是又想要保留原来 SOAP 列表，那么从旧软件的 soap-list 目录下拷贝 soap-list.json 替换新软件相应文件即可。</p>
+<p>1-3. 如果你更新了软件，但是又想要保留原来的设置和记录，那么从旧软件的主目录下拷贝 configuration 和 runningLog 到新软件主目录下即可。</p>
+</li>
+<li>
+<p><strong>导航菜单</strong></p>
+<p><img src="navagation.png" /></p>
+</li>
+<li>
+<p><strong>基本设置页</strong></p>
+<p>3-1. IP 是通过获得所有 DNS 地址后去掉 172.17 和 127.0.0.1 部分的地址后，优先选择 192.168 、10.0 、172.16 获得的。</p>
+<p>3-2. Password 默认是 password， 如果更改过，下一次启动软件会是上一次关闭前的值。</p>
+<p>3-3. 自动发送登陆 API 和自动发送 ConfigurationStarted/Finished 会在每一个 SOAP 请求前后都发送。</p>
+<p>3-4. 在 IP 有变动的时候，软件会自动请求 currentsetting.htm 页面和发送 GetInfo API 去更新右边的板子信息 （GetInfo API 不需要验证登陆），所以请注意右边信息是否完整。这是软件能否连接到板子的标志。</p>
+<p>3-5. 在密码有变动的时候，软件会自动发送 ParentalControl：Authenticate 验证密码正确与否。如果错误，还请注意提示。</p>
+<p>3-6. Serial Number 和 Firmware Version 通过 GetInfo API 获取，其余信息通过 currentsetting.htm 页面获取。</p>
+</li>
+<li>
+<p><strong>发送SOAP请求</strong></p>
+<p><img src="soap-option.png" /></p>
+<p>4-1. 构造 SOAP 请求。删除 method 和 action 输入框，会出现列表可以选择。选择 method 后，action 列表会跟着变动。选择完 action 之后，这个 API 所需要的参数会自动在右边列出。</p>
+<p>4-2. 你可以自己指定各项参数，如果这个 API 返回的 Response Code 是 0 的话，那软件会存下 method、action 和 所需参数的对应关系，供下次可以选择使用。</p>
+<p><img src="response.png" /></p>
+<p>4-3. 默认显示的结果是经过格式化显示的，在右上角的左边按钮可以切换显示原始结果和格式化结果。</p>
+<p>4-4. 在右上角右边按钮可以复制当前的显示结果。</p>
+<p><img src="http-detail.png" /></p>
+<p>4-5. HTTP Details 左边显示了这个请求耗时，具体到每个步骤。一个请求的timeout时间是15s。</p>
+<p>4-6. HTTP Details 右边分块显示了HTTP请求头和请求主体，还有返回数据的请求头和请求主体</p>
+</li>
+<li>
+<p><strong>历史记录</strong></p>
+<p><img src="logs.png" /></p>
+<p>5-1. 历史记录页面按照时间显示了以前发送过的 SOAP 请求。一次显示 15 条。在滚动条到达地步的时候继续拉动，会动态显示更多条目。</p>
+<p>5-2. 记录可以展开显示每个记录的详细信息。</p>
+<p>5-3. Response Code 如果是 0，则为绿色背景，如果非 0，则为橙色背景。</p>
+<p>5-4. Cost Time 可以按照大小排序。</p>
+<p>5-5. 每条记录可以删除。</p>
+<p>5-6. 如果点击 Resend 按钮，那么页面会跳到发送构造 SOAP 发送请求的页面。并且根据历史纪录来填写 method、action、SOAP Header 和所需参数，同时也会清除上一次请求的信息。</p>
+</li>
+<li>
+<p><strong>版本信息</strong></p>
+<p><img src="app-version.png" /></p>
+<p>6-1. 这个页面展示了当前软件的版本信息。如果有使用上的问题和建议意见，还请联系作者 defeng.liu。</p>
+<p>6-2. 如果有新版本，可以点击 Homepage 用浏览器打开此页面下载新版本。在每次进入这个页面的时候软件会自动检查，你也可以手动点击 Check Update 按钮检查版本。</p>
+</li>
+</ol>
+<hr />
+<p>历史更新记录：</p>
+<p>无</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

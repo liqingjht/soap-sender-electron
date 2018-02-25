@@ -1,0 +1,11 @@
+[
+	{
+		"method": "DeviceConfig",
+		"actions": [
+			{
+				"action": "ConfigurationStarted",
+				"params": []
+			}
+		]
+	}
+]

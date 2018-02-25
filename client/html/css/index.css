@@ -1,0 +1,168 @@
+body {
+	background-color: #F2F3F4;
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+
+.panel {
+	position: absolute;
+	top: 80px;
+	left: 80px;
+	width: 1120px;
+	height: 700px;
+	font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+	font-size: 1.5em;
+}
+
+.panel > div {
+	display: none;
+}
+
+.ivu-message-notice-content-text .ivu-message-custom-content span {
+	font-size: 1.2em;
+}
+/********0*********/
+.setting-card .ivu-card-body > div {
+	margin-top: 30px;
+	margin-bottom: 30px;
+	display: block;
+}
+
+.one-input > div:first-child {
+	margin-bottom: 10px;
+	display: block;
+}
+
+.one-input > div:last-child {
+	display: block;
+}
+
+.one-info {
+	display: block;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.one-info > div:first-child {
+	width: 200px;
+	display: inline-block;
+}
+
+.one-info > div:last-child {
+	display: inline;
+}
+/*******************/
+
+/********1*********/
+.request-card {
+	height: 650px;
+}
+
+#param-card .ivu-card-body {
+	max-height: 547px;
+	overflow-y: auto;
+}
+
+.ivu-tabs-nav-scroll {
+	background-color: white;
+}
+
+.one-option {
+	display: block;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.one-option > div:nth-child(1) {
+	width: 35%;
+	display: inline-block;
+}
+
+.one-option > div:nth-child(2) {
+	display: inline-block;
+	width: 54%;
+	margin-left: 2%
+}
+
+.one-option > div:nth-child(3) {
+	display: inline-block;
+	width: 5%;
+	margin-left: 10px;
+}
+
+.option-rm-icon {
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.option-rm-icon:hover {
+	color: #ed3f14
+}
+
+.option-plus-icon {
+	font-size: 21px;
+    position: absolute;
+    top: 14px;
+    right: 20px;
+    cursor: pointer;
+    font-weight: 100;
+    color: #80848f;
+}
+
+.option-plus-icon:hover {
+	color: #2d8cf0;
+}
+
+#pretty-response, #raw-response {
+	background: white;
+	border-top: solid 1px grey;
+	position: relative;
+	top: 32px;
+}
+
+#raw-response code {
+	margin-top: 14px;
+}
+
+.ivu-timeline-item:not(:last-child) {
+	padding-bottom: 107px;
+}
+
+.ivu-timeline-item-content {
+	font-size: 15px
+}
+
+.opt-send-btn {
+	margin-top: 30px;
+	position: relative;
+    left: 35%;
+	width: 150px;
+}
+
+.detail-panel {
+	max-height: 400px;
+	overflow: auto;
+}
+
+/*****************/
+#scroll-main .ivu-scroll-container {
+	height: 690px !important;
+}
+
+.ivu-table .row-error-code td:nth-of-type(6){
+	background-color: #ff9900;
+	color: #fff;
+}
+
+.ivu-table .row-success-code td:nth-of-type(6){
+	background-color: #19be6b;
+	color: #fff;
+}
+/****************/
+.app-info > div {
+	margin-top: 20px;
+}
+
+.logo {
+	margin-top: 40px;
+}

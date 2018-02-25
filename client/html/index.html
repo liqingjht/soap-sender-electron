@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>SOAP-Sender@Defeng.Liu</title>
+	<link href="css/font-awesome.min.css" rel="stylesheet">
+	<link href="css/prism.css" rel="stylesheet">
+	<link href="css/iview.css" rel="stylesheet">
+	<link href="css/nav.css" rel="stylesheet">
+	<link href="css/index.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="cd-overlay-nav">
+		<span></span>
+	</div>
+	<div class="cd-overlay-content">
+		<span></span>
+	</div>
+
+	<div id="app">
+		<nav class="nav">
+			<div class="burger burger--active" @click="toggleMenu">
+				<div class="burger__patty"></div>
+			</div>
+			<ul class="nav__list nav__list--active" @click="switchPanle">
+				<li class="nav__item" @click="tmpNavIndex = 0" :class="{nav__item__sel: (tmpNavIndex === 0)}">
+					<a class="nav__link"><i class="fa fa-sliders"></i></a>
+				</li>
+				<li class="nav__item" @click="tmpNavIndex = 1" :class="{nav__item__sel: (tmpNavIndex === 1)}">
+					<a class="nav__link"><i class="fa fa-paper-plane-o"></i></a>
+				</li>
+				<li class="nav__item" @click="tmpNavIndex = 2" :class="{nav__item__sel: (tmpNavIndex === 2)}">
+					<a class="nav__link"><i class="fa fa-history"></i></a>
+				</li>
+				<li class="nav__item" @click="tmpNavIndex = 3" :class="{nav__item__sel: (tmpNavIndex === 3)}">
+					<a class="nav__link"><i class="fa fa-copyright"></i></a>
+				</li>
+			</ul>
+		</nav>
+
+		<div class="title-head">
+			<ul class="action_list">
+				<li class="window_action" @click="toggleWinTop">
+					<a href="#1" class="window_lock"><i class="fa" :class="winTop? 'fa-lock': 'fa-unlock-alt'"></i></a>
+				</li>
+				<li class="window_action" @click="winMini">
+					<a href="#2" class="window_mini"><i class="fa fa-minus"></i></a>
+				</li>
+				<li class="window_action" @click="winClose">
+					<a href="#3" class="window_close"><i class="fa fa-power-off"></i></a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="panel">
+			<div v-if="navIndex === 0">
+				<Row>
+					<i-col span="10" offset="1">
+						<Card class="setting-card">
+							<p slot="title">Basic Settings</p>
+							<div class="one-input">
+								<div>IP Address</div>
+								<auto-complete
+									v-model.trim="dutIP"
+									:data="getIPArr"
+									placeholder=""
+									style="width:200px"
+									@change.native="handleIPChange">
+								</auto-complete>
+							</div>
+							<div class="one-input">
+								<div>Password</div>
+								<i-input
+									v-model="passwd"
+									placeholder=""
+									style="width: 200px"
+									@change.native="handlePasswdChange">
+								</i-input>
+							</div>
+							<div class="one-input">
+								<div>Auto Send Authenticate</div>
+								<div>
+									<i-switch v-model="autoAuth">
+										<Icon type="android-done" slot="open"></Icon>
+										<Icon type="android-close" slot="close"></Icon>
+									</i-switch>
+								</div>
+							</div>
+							<div class="one-input">
+								<div>Auto Send Configuration Start/Finish</div>
+								<div>
+									<i-switch v-model="autoStartEnd">
+										<Icon type="android-done" slot="open"></Icon>
+										<Icon type="android-close" slot="close"></Icon>
+									</i-switch>
+								</div>
+							</div>
+						</Card>
+					</i-col>
+					<i-col span="10" offset="2">
+						<Card class="router-info-card">
+							<p slot="title">Router Information</p>
+							<div class="one-info" v-for="(value, key) in routerInfo">
+								<div>{{keyMapping[key]}}</div>
+								<div>{{value}}</div>
+							</div>
+						</Card>
+					</i-col>
+					<i-col span="1"></i-col>
+				</Row>
+			</div>
+
+			<div v-if="navIndex === 1">
+				<Tabs v-model="tabPane" style="width: 98%">
+        			<tab-pane label="SOAP Options" name="options">
+						<Card class="request-card">
+							<Row :gutter="16">
+								<i-col span="12">
+									<Card>
+										<p slot="title">
+											<span>SOAP Method and Action</span>
+										</p>
+										<div class="one-option">
+											<div>
+												<auto-complete
+													v-model.trim="method"
+													:data="reqMethods"
+													:filter-method="autoFilter"
+													placeholder=""
+													:disabled="optSending">
+												</auto-complete>
+											</div>
+											<div>
+												<auto-complete
+													v-model.trim="action"
+													:data="reqActions"
+													:filter-method="autoFilter"
+													placeholder=""
+													:disabled="optSending">
+												</auto-complete>
+											</div>
+										</div>
+									</Card>
+									<Card style="margin-top: 25px;">
+										<p slot="title">
+											<span>SOAP Headers</span>
+											<div class="option-plus-icon" @click="addNewHeader"><Icon type="plus-round"></Icon></div>
+										</p>
+										<div class="one-option" v-for="(v, k) in reqHeaders" :data-index="k">
+											<div><i-input v-model.trim="v[0]" placeholder="" :disabled="optSending"></i-input></div>
+											<div><i-input v-model.trim="v[1]" placeholder="" :disabled="optSending"></i-input></div>
+											<div class="option-rm-icon" @click="rmReqHeader"><Icon type="close-round"></Icon></div>
+										</div>
+									</Card>
+									<i-button type="primary" :loading="optSending" @click="optSend" class="opt-send-btn">
+										<span v-if="!optSending">Send</span>
+										<span v-else>Sending...</span>
+									</i-button>
+								</i-col>
+								<i-col span="12">
+									<Card id="param-card">
+										<p slot="title">
+											<span>SOAP Parameters</span>
+											<div class="option-plus-icon" @click="addNewParam"><Icon type="plus-round"></Icon></div>
+										</p>
+										<div class="one-option" v-for="(v, k) in reqParams" :data-index="k">
+											<div><i-input v-model.trim="v[0]" placeholder="" :disabled="optSending"></i-input></div>
+											<div><i-input v-model.trim="v[1]" placeholder="" :disabled="optSending"></i-input></div>
+											<div class="option-rm-icon" @click="rmReqParam"><Icon type="close-round"></Icon></div>
+										</div>
+									</Card>
+								</i-col>
+							</Row>
+						</Card>
+					</tab-pane>
+        			<tab-pane label="Response" name="response">
+						<Card class="request-card" style="overflow: auto;">
+							<div style="position: absolute; left: 17px; display:inline; top:18px; font-size:17px;">
+								<span>{{method}}: {{action}}</span>
+							</div>
+							<Button-group style="position: absolute; right: 17px; display:inline;">
+								<i-button type="ghost" icon="wand" @click="togglePretty"></i-button>
+								<i-button type="ghost" icon="code" @click="copyResponse"></i-button>
+							</Button-group>
+							<pre v-if="showPretty" id="pretty-response">
+								<code class="language-markup" key="no-reuse-resp-htm"><span v-html="prettyResp"></span></code>
+							</pre>
+							<pre v-if="!showPretty" id="raw-response">
+								<span key="no-reuse-resp-txt">{{responseTxt}}</span>
+							</pre>
+						</Card>
+					</tab-pane>
+					<tab-pane label="HTTP Details" name="details">
+						<Card class="request-card" style="overflow: auto;">
+							<Row :gutter="16">
+								<i-col span="5">
+									<Timeline>
+										<timeline-item color="green">DNS Lookup ({{timings.lookup}} ms)</timeline-item>
+										<timeline-item color="green">Socket ({{timings.socket}} ms)</timeline-item>
+										<timeline-item color="green">Connect ({{timings.connect}} ms)</timeline-item>
+										<timeline-item color="green">Response ({{timings.response}} ms)</timeline-item>
+										<timeline-item color="blue">End ({{timings.end}} ms)</timeline-item>
+									</Timeline>
+								</i-col>
+								<i-col span="19">
+									<collapse accordion>
+										<panel name="0">
+											<span>Request Header</span>
+											<div slot="content" class="detail-panel">
+												<pre>{{detailObj.reqHeader}}</pre>
+											</div>
+										</panel>
+										<panel name="1">
+											<span>Request Body</span>
+											<div slot="content" class="detail-panel">
+												<pre>{{detailObj.reqBody}}</pre>
+											</div>
+										</panel>
+										<panel name="2">
+											<span>Response Header</span>
+											<div slot="content" class="detail-panel">
+												<pre>{{detailObj.rspHeader}}</pre>
+											</div>
+										</panel>
+										<panel name="3">
+											<span>Response Body</span>
+											<div slot="content" class="detail-panel">
+												<pre>{{detailObj.rspBody}}</pre>
+											</div>
+										</panel>
+									</collapse>
+								</i-col>
+							</Row>
+						</Card>
+					</tab-pane>
+    			</Tabs>
+			</div>
+
+			<div v-if="navIndex === 2">
+				<Scroll :on-reach-bottom="handleReachBottom" id="scroll-main" loading-text="Loading">
+					<!--<collapse accordion>
+						<panel v-for="(v, k) in logItems" :name="k">
+							<span>{{v.model}} | {{v.method}}: {{v.action}} | Code: {{v.resCode}} | Time: {{v.costTime}}(ms)</span>
+							<div slot="content">
+								<pre>
+									{{v.reqHeader}}
+									{{v.reqBody}}
+									-----------------------------------------
+									{{v.resHeader}}
+									{{v.resBody}}
+								</pre>
+							</div>
+						</panel>
+					</collapse>-->
+					<i-table
+						:columns="tableHeader"
+						:row-class-name="rowClassName"
+						:data="logItems"
+						no-data-text="No Data Yet"
+						strip>
+					</i-table>
+				</Scroll>
+			</div>
+
+			<div v-if="navIndex === 3">
+				<Row style="margin-top: 50px;">
+					<i-col span="4" offset="2">
+						<div class="app-info">
+							<div>APP Name:</div>
+							<div>Version:</div>
+							<div>Author:</div>
+							<div>E-Mail:</div>
+						</div>
+					</i-col>
+					<i-col span="8">
+						<div class="app-info">
+							<div>{{appName}}</div>
+							<div>{{version}}</div>
+							<div>{{author}}</div>
+							<div>{{email}}</div>
+						</div>
+					</i-col>
+					<i-col span="6"  offset="2">
+						<div class="logo"><img src="./image/cat.svg" width="120px"></div>
+					</i-col>
+					<i-col span="2"></i-col>
+				</Row>
+				<br><br><hr width="98%"><br><br>
+				<div style="text-align: center">
+					<div style="margin-top: 5px; margin-bottom: 25px;">
+						<i-button type="primary" @click="checkUpdate" :disabled="checking">Check Update</i-button>
+					</div>
+					<div v-if="checking === false">
+						<div v-if="!checkUpdateError">
+							<div v-if="haveNew">Found new version: {{newVersion}}, goto 
+								<i @click="openHomePage" style="color: #2d8cf0; font-size: 1.3em; cursor: pointer;">Homepage</i> to download.</div>
+							<div v-else>You're up to date! Soap-Sender V{{version}} is the newest version available.</div>
+						</div>
+						<div v-else>
+							<div>Error to check update.</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<Spin size="large" fix v-if="firstLoading"></Spin>
+		</div>
+	</div>
+
+	<script>
+		if (typeof module === 'object') {
+			window.module = module;
+			module = undefined;
+		}
+	</script>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/velocity.min.js"></script>
+	<script src="js/prism.js"></script>
+	<script src="js/vue.min.js"></script>
+	<script src="js/iview.min.js"></script>
+	<script src="js/config.js"></script>
+	<script src="js/util.js"></script>
+	<script src="js/transport.js"></script>
+	<script src="js/index.js"></script>
+
+	<script>
+		if (window.module) module = window.module;
+	</script>
+</body>
+
+</html>
