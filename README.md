@@ -1,9 +1,21 @@
 <h2>Soap-Sender 主页</h2>
 
-构建 app
-> 安装 electron-packager
+目录结构：
 
-> 在client文件夹内运行 npm run pkwin64
+server: 用来启动展示主页和检查更新版本
+
+client: 用来构建客户端软件
+
+----------
+
+
+client 文件夹内构建 app
+
+> npm install
+
+> npm install -g electron-packager
+
+> npm run pkwin64
 
 ----------
 
