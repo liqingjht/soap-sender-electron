@@ -1,26 +1,29 @@
 {
-    "name": "soap-sender",
-	"version": "1.0.1",
-	"author": "liqingjht",
-	"email": "liqingjht@163.com",
-	"homepage": "http://172.17.92.252:7168",
-    "description": "A minimal soap sender desktop app",
-    "main": "main.js",
-    "scripts": {
-		"start": "electron .",
-		"pk": "electron-packager ./  Soap-Sender --out=../release --electron-version=1.7.10  --overwrite --icon=./assets/logo.ico --asar",
-        "pkwin64": "electron-packager ./  Soap-Sender --out=../release --platform=win32 --arch=x64 --electron-version=1.7.10  --overwrite --icon=./assets/logo.ico --asar",
-		"pkwin32": "electron-packager ./  Soap-Sender --out=../release --platform=win32 --arch=ia32 --electron-version=1.7.10  --overwrite --icon=./assets/logo.ico --asar"
-    },
-    "keywords": [
-        "Electron",
-        "SOAP"
-    ],
-    "license": "MIT",
-    "devDependencies": {},
-    "dependencies": {
-        "cheerio": "^0.22.0",
-        "request": "^2.83.0",
-        "xml-formatter": "^1.0.1"
-    }
+  "name": "soap-sender",
+  "version": "1.0.1",
+  "author": "liqingjht",
+  "email": "liqingjht@163.com",
+  "homepage": "http://172.17.92.252:7168",
+  "description": "A minimal soap sender desktop app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pk": "electron-packager ./  Soap-Sender --out=../release --electron-version=1.7.10  --overwrite --icon=./assets/logo.ico --asar",
+    "pkwin64": "electron-packager ./  Soap-Sender --out=../release --platform=win32 --arch=x64 --electron-version=1.7.10  --overwrite --icon=./assets/logo.ico --asar",
+    "pkwin32": "electron-packager ./  Soap-Sender --out=../release --platform=win32 --arch=ia32 --electron-version=1.7.10  --overwrite --icon=./assets/logo.ico --asar"
+  },
+  "keywords": [
+    "Electron",
+    "SOAP"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^1.8.4",
+    "electron-packager": "^11.2.0"
+  },
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "request": "^2.83.0",
+    "xml-formatter": "^1.0.1"
+  }
 }
