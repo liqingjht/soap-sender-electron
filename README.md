@@ -11,11 +11,13 @@ client: 用来构建客户端软件
 
 client 文件夹内构建 app
 
-> npm install
+> `npm install --production`
 
-> npm install -g electron-packager
+> `npm install -g electron electron-packager`
 
-> npm run pkwin64
+> run `electron -v` and modify the electron version in package.json scripts line
+
+> `npm run pkwin64`
 
 ----------
 
