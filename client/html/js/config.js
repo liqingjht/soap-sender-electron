@@ -9,21 +9,14 @@ const path = require("path");
 const format = require('xml-formatter');
 const request = require("request");
 const cheerio = require("cheerio");
+const package = require(path.join(__dirname, "../package.json"));
 
 const cwd = process.cwd();
 const logFile = path.join(cwd, "./runningLog");
-const soapListFile = path.join(cwd, "./soap-list/soap-list.json");
+const soapListFile = path.join(__dirname, "../soap-list/soap-list.json");
 const configFile = path.join(cwd, "./configuration");
 
-const package = {
-	"name": "Soap-Sender",
-	"version": "1.0.1",
-	"author": "defeng.liu",
-	"email": "defeng.liu@deltaww.com",
-	"homepage": "http://172.17.92.252:7168"
-}
-
-var sessionID = "xxxxxxxxxxxxxxxxxxxxxxxxx";
+var sessionID = "DNI-Soap-Sender-Session-ID-X";
 var config = undefined;
 
 var soapList = [];
@@ -33,6 +26,7 @@ function newInfo() {
 	this.version = "---";
 	this.serialNum = "---";
 	this.soapVer = "---";
+	this.loginMethod = "---"
 	this.region = "---";
 	this.connection = "---";
 }

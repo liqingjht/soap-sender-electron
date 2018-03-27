@@ -15,6 +15,7 @@ const keyMapping = {
 	"version": "Firmware Version:",
 	"serialNum": "Serial Number:",
 	"soapVer": "SOAP Version",
+	"loginMethod": "Login Method",
 	"region": "Region",
 	"connection": "Internet Connection:"
 }
@@ -72,7 +73,7 @@ var app = new Vue({
 		}
 	},
 	watch: {
-		method: function(val) {
+		method: function updateAction(val) {
 			let index = this.reqMethods.indexOf(val);
 			if(index === -1) {
 				this.reqActions = [];
@@ -82,7 +83,7 @@ var app = new Vue({
 				this.reqActions = getAllActions(val);
 			}
 		},
-		action: function(val) {
+		action: function updateParam(val) {
 			let index = this.reqActions.indexOf(val);
 			if(index === -1) {
 				this.reqParams = [];
@@ -145,6 +146,9 @@ var app = new Vue({
 						_this.$Message.warning("The password you input may not correct");
 					else
 						_this.$Message.warning("The default password may not correct");
+				}
+				else {
+					_this.$Message.success("Pass the password checking");
 				}
 			});
 		},

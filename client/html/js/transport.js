@@ -63,27 +63,28 @@ function updateRouterInfo(ip, msg) {
 	request.get(option, function(err, res, data) {
 		if(!err && res.statusCode === 200) {
 			data = data.toString().trim();
-			let tags = ["Firmware=", "RegionTag=", "Region=", "Model=", "InternetConnectionStatus=", "ParentalControlSupported=", "SOAPVersion=", "ReadyShareSupportedLevel="];
-			let keys = ["", "", "region", "modelName", "connection", "", "soapVer"];
+			let tags = ["Region", "Model", "InternetConnectionStatus", "SOAPVersion", "LoginMethod"];
+			let keys = ["region", "modelName", "connection", "soapVer", "loginMethod"];
+			let items = data.split('\r');
 			let tagLen = tags.length;
-			let [start, end] = [0, 0];
-			for(let i=0; i<tagLen-1; i++) {
-				start = data.indexOf(tags[i]);
-				end = data.indexOf(tags[i + 1]);
-				if(start === -1 || end === -1)
-					break;
-				if(keys[i] !== "") {
-					Vue.set(app.routerInfo, keys[i], data.slice(start + tags[i].length, end).trim());
+			for(let i=0; i<tagLen; i++) {
+				for(let j=0; j<items.length; j++) {
+					if(items[j].startsWith(tags[i])) {
+						let val = items[j].split('=')[1];
+						Vue.set(app.routerInfo, keys[i], val);
+					}
 				}
 			}
-			app.routerInfo;
 		}
 		else {
 			app.$Message.warning(msg);
-			Vue.set(app.routerInfo, "region", "---");
-			Vue.set(app.routerInfo, "modelName", "---");
-			Vue.set(app.routerInfo, "connection", "---");
-			Vue.set(app.routerInfo, "soapVer", "---");
+			vSet(app.routerInfo, ...[
+				["region", "---"],
+				["modelName", "---"],
+				["connection", "---"],
+				["soapVer", "---"],
+				["loginMethod", "---"]
+			])
 		}
 	})
 }
@@ -101,7 +102,7 @@ function checkSoapOption(arrs) {
 			i --;
 			continue;
 		}
-		if(arr[0] === "" || arr[1] === "") {
+		if(arr[0] === "") {
 			return false;}
 	}
 	return true;
@@ -190,18 +191,21 @@ function postFunc(option, callback) {
 				resolve(result);
 			} else {
 				var result = callback(error, response, body);
-				reject(result === undefined? false: result);
+				reject(result === undefined? '': result);
 			}
 		})
 	})
 }
 
 function setTimings(newTiming) {
-	Vue.set(app.timings, "lookup", newTiming===undefined? 0: newTiming.lookup.toFixed(3));
-	Vue.set(app.timings, "socket", newTiming===undefined? 0: newTiming.socket.toFixed(3));
-	Vue.set(app.timings, "connect", newTiming===undefined? 0: newTiming.connect.toFixed(3));
-	Vue.set(app.timings, "response", newTiming===undefined? 0: newTiming.response.toFixed(3));
-	Vue.set(app.timings, "end", newTiming===undefined? 0: newTiming.end.toFixed(3));
+	let {lookup=0, socket=0, connect=0, response=0, end=0} = newTiming;
+	vSet(app.timings, ...[
+		["lookup", lookup.toFixed(3)],
+		["socket", socket.toFixed(3)],
+		["connect", connect.toFixed(3)],
+		['response', response.toFixed(3)],
+		['end', end.toFixed(3)]
+	])
 }
 
 function stringifyHeader(headers) {

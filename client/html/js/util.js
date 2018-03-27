@@ -184,6 +184,9 @@ function bindMethodAndAction() {
 				methods.push(obj.method);
 			}
 			app.reqMethods = methods;
+			let curMethod = app.method;
+			let all = getAllActions(curMethod);
+			app.reqActions = all;
 		}
 		catch(err) {}
 	})
@@ -192,7 +195,7 @@ function bindMethodAndAction() {
 function getActionsArr(method) {
 	for(let i=0; i<soapList.length; i++) {
 		if(soapList[i].method === method) {
-			return soapList[i].actions;
+			return [...soapList[i].actions];
 		}
 	}
 	return [];
@@ -272,4 +275,10 @@ function getPrettyTime() {
 	let curDay = `${current.getFullYear().toString().slice(-2)}/${current.getMonth() + 1}/${current.getDate()}`;
 	curDay += ` - ${current.getHours()}:${current.getMinutes()}`;
 	return curDay;
+}
+
+function vSet(obj, ...rest) {
+	for(let i=0; i<rest.length; i++) {
+		Vue.set(obj, rest[i][0], rest[i][1]);
+	}
 }
