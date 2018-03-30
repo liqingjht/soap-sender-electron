@@ -302,8 +302,10 @@ var app = new Vue({
 				else {
 					let cur = _this.version;
 					let c = cur.split(".");
-					let l = ver.split(".");
-					if(parseInt(l[0]) > parseInt(c[0]) || parseInt(l[1]) > parseInt(c[1]) || parseInt(l[2]) > parseInt(c[2])) {
+					let n = ver.split(".");
+					let [c0, c1, c2] = c.map(v => parseInt(v));
+					let [n0, n1, n2] = n.map(v => parseInt(v));
+					if((n0 > c0) || (n0 === c0 && n1 > c1) || (n0 === c0 && n1 === c1 && n2 > c2)) {
 						_this.checkUpdateError = false;
 						_this.haveNew = true;
 						_this.newVersion = ver;
