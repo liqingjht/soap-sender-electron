@@ -65,6 +65,7 @@ function updateRouterInfo(ip, msg) {
 			data = data.toString().trim();
 			let tags = ["Region", "Model", "InternetConnectionStatus", "SOAPVersion", "LoginMethod"];
 			let keys = ["region", "modelName", "connection", "soapVer", "loginMethod"];
+			data = data.replace(/\r*\n|\s+/g, '\r');
 			let items = data.split('\r');
 			let tagLen = tags.length;
 			for(let i=0; i<tagLen; i++) {
