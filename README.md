@@ -9,15 +9,23 @@ client: 用来构建客户端软件
 ----------
 
 
-client 文件夹内构建 app
+如何构建 app
 
-> `npm install --production`
+1. 在 client 内运行 cnpm install --production
+2. 全局安装 electron 和 electron-packager 
+3. electron -v 查看 electron 版本，修改 package.json 里的 scripts 相对应的 electron 版本号
+4. cnpm run pk-win (或者 pk-linux pk-mac)
 
-> `npm install -g electron electron-packager`
+注意点:
 
-> run `electron -v` and modify the electron version in package.json scripts line
-
-> `npm run pkwin64`
+1. 因为用 npm 安装 electron 特别慢，即使设置了软件源也还是一样。 所以用 cnpm 来安装
+2. 如果用 npm 在项目里安装依赖，就不能使用 cnpm run pk-win，会导致找不到模块，npm 和 cnpm 不能混用
+3. 不要在项目里安装开发依赖，如 electron 和 electron-packager，会导致包特别大
+4. 本来可以直接安装开发依赖，使用 prune 选项 和制定包管理器为 cnpm 来删除开发依赖，这样不用在打包命令上指定 electron 版本号，但是在 windows 上不能指定包管理器为 cnpm
+5. 最好不要将打包输出路径放在项目里，会导致打包很大
+6. mac 版本不要在 windows 上打包，即使用管理员权限可以打包成功，最后要压缩文件夹的时候会有文件权限失败，在 linux 机子上打包
+7. linux 版本的在 linux 机子上打包，在 root 权限下打包，赋予执行权限，用普通账户运行
+8. linux 需要安装 libgconf，运行命令 sudo apt-get install libgconf-2-4 来安装
 
 ----------
 
