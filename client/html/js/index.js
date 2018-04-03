@@ -30,10 +30,11 @@ var app = new Vue({
 
 		"dutIP": dutIP,
 		"passwd": config === undefined?  "password": config.passwd,
-		"autoAuth": config === undefined? true: config.autoAuth,
+		"autoAuth": config === undefined? false: config.autoAuth,
 		"autoStartEnd": config === undefined? true: config.autoStartEnd,
 		"routerInfo": routerInfo,
 		"keyMapping": keyMapping,
+		'timeout': config === undefined? '8': config.timeout,
 
 		"tabPane": "options",
 		"reqHeaders": reqHeaders,
@@ -48,9 +49,11 @@ var app = new Vue({
 		"showPretty": true,
 		"timings": timings,
 		"detailObj": detailObj,
+		'cookie': '',
 
 		"logItems": [],
 		"tableHeader": tableHeader,
+		'pdfLogs': [],
 
 		"appName": package.name,
 		"author": package.author,
@@ -59,7 +62,8 @@ var app = new Vue({
 		"checkUpdateError": false,
 		"haveNew": false,
 		"newVersion": "",
-		"checking": false
+		"checking": false,
+		"oldAppPath": ""
 	},
 	computed: {
 		username: function() {
@@ -70,6 +74,26 @@ var app = new Vue({
 		},
 		getIPArr: function() {
 			return getLocalIP();
+		},
+		loginStatus() {
+			let loginMethod = this.routerInfo.loginMethod;
+			loginMethod = parseInt(loginMethod);
+			if(isNaN(loginMethod) || loginMethod < 2)
+				return true;
+			return false;
+		},
+		logoutStatus() {
+			let loginMethod = this.routerInfo.loginMethod;
+			loginMethod = parseInt(loginMethod);
+			if(isNaN(loginMethod) || loginMethod < 2 || this.cookie.trim() === '')
+				return true;
+			return false;
+		},
+		sendStatus() {
+			let model = this.routerInfo.modelName;
+			if(model === undefined || model.trim() === '' || model === '---')
+				return true;
+			return false;
 		}
 	},
 	watch: {
@@ -90,6 +114,11 @@ var app = new Vue({
 			}
 			else {
 				this.reqParams = getAllParams(val);
+			}
+		},
+		cookie() {
+			if(this.cookie.trim() !== '') {
+				this.autoAuth = false;
 			}
 		}
 	},
@@ -137,6 +166,8 @@ var app = new Vue({
 			updateDeviceInfo(this.dutIP);
 		},
 		handlePasswdChange: function(event) {
+			if(this.autoAuth !== true)
+				return;
 			let _this = this;
 			if(isIPFormat(this.dutIP) === false)
 				return;
@@ -148,9 +179,54 @@ var app = new Vue({
 						_this.$Message.warning("The default password may not correct");
 				}
 				else {
-					_this.$Message.success("Pass the password checking");
+					_this.$Message.success("Pass the password checking. Already login by Authenticate API");
 				}
 			});
+		},
+		soapLogin() {
+			sendSoapLogin(this.dutIP, this.passwd, (err, resp) => {
+				if(err) {
+					this.$Message.error('Login by SOAPLogin API failed');
+					return;
+				}
+				let cookie = getCookie(resp);
+				if(cookie === '') {
+					this.$Message.warning('SOAP API sent successfully but can not get cookie');
+					return;
+				}
+				this.cookie = cookie;
+				let headers = this.reqHeaders;
+				for(let i=0; i<headers.length; i++) {
+					if(headers[i][0].toLowerCase() === 'cookie') {
+						headers.splice(i, 1);
+						break;
+					}
+				}
+				if(headers.length > 5) {
+					headers.pop();
+				}
+				headers.push(['Cookie', cookie]);
+				this.reqHeaders = headers;
+				this.$Message.success('Login successfully and set cookie');
+			})
+		},
+		soapLogout() {
+			sendSoapLogout(this.dutIP, this.cookie, (err) => {
+				if(err) {
+					this.$Message.error('Logout by SOAPLogout API failed');
+					return;
+				}
+				this.cookie = '';
+				let headers = this.reqHeaders;
+				for(let i=0; i<headers.length; i++) {
+					if(headers[i][0].toLowerCase() === 'cookie') {
+						headers.splice(i, 1);
+						break;
+					}
+				}
+				this.reqHeaders = headers;
+				this.$Message.success('Logout successfully and clear cookie');
+			})
 		},
 
 		// request
@@ -166,7 +242,15 @@ var app = new Vue({
 			this.reqParams.splice(index, 1);
 		},
 		addNewHeader: function() {
-			if(this.reqHeaders.length > (6 - 1)) {
+			let len = 5;
+			let headers = this.reqHeaders;
+			for(let i=0; i<headers.length; i++) {
+				if(headers[i][0].toLowerCase().trim() === 'cookie') {
+					len = 6;
+					break;
+				}
+			}
+			if(this.reqHeaders.length > (len - 1)) {
 				this.$Message.warning("Reach the maximum number of header");
 				return;
 			}
@@ -174,6 +258,11 @@ var app = new Vue({
 		},
 		rmReqHeader: function(event) {
 			let index = $(event.target).parents(".one-option").attr("data-index");
+			let key = this.reqHeaders[index][0];
+			if(key.toLowerCase().trim() === 'cookie') {
+				this.$Message.warning('Remove cookie for this session. Login again to get Cookie if you need');
+				this.cookie = '';
+			}
 			this.reqHeaders.splice(index, 1);
 		},
 		autoFilter: function(value, option) {
@@ -242,6 +331,16 @@ var app = new Vue({
 			clipboard.writeText($(id).text());
 			this.$Message.success("Copy content to clipboard successfully");
 		},
+		checkTimeout() {
+			let timeout = this.timeout;
+			timeout = parseInt(timeout);
+			if(isNaN(timeout)) {
+				this.$Message.warning('Invalid input for timeout value');
+				this.timeout = '8';
+				return;
+			}
+			this.timeout = String(timeout);
+		},
 
 		// history
 		handleReachBottom: function() {
@@ -282,16 +381,33 @@ var app = new Vue({
 			this.navIndex = 1;
 		},
 		rowClassName: function(row, index) {
-			let code = this.logItems[index].resCode;console.log(code)
-			if(code !== "000" && code !== "00" && code !== "0") {
-				return "row-error-code";
+			let code = this.logItems[index].resCode;
+			if(code === undefined)
+				return 'row-error-code';
+			else if(code.length === 3 && (code.startsWith('4') || code.startsWith('5')))
+				return 'row-error-code';
+			else if(code !== '0' && code !== '00' && code !== '000')
+				return 'row-invalid-code';
+			return 'row-success-code';
+		},
+		handleSelect(selection) {
+			this.pdfLogs = selection;
+		},
+		exportPdf() {
+			if(this.pdfLogs.length === 0) {
+				this.$Message.warning('Select some logs to export');
+				return;
 			}
-			else {
-				return "row-success-code";
-			}
+			ipcRenderer.send('print-pdf', this.pdfLogs);
+			ipcRenderer.once('pdf-error', () => {
+				this.$Message.error('Occur error when import pdf');
+			});
+			ipcRenderer.once('pdf-success', (event, saver) => {
+				this.$Message.success(`Import ${saver}`);
+			})
 		},
 
-		checkUpdate: function() {
+		checkUpdate: function(firstLoad) {
 			let _this = this;
 			this.checking = true;
 			getVersion(package.homepage, function(err, ver) {
@@ -309,6 +425,12 @@ var app = new Vue({
 						_this.checkUpdateError = false;
 						_this.haveNew = true;
 						_this.newVersion = ver;
+						if(firstLoad === true) {
+							new Notification('Soap-Sender', {
+								body: 'New version has been found. Goto APP info panel to check.'
+							  })
+							_this.$Message.success('New version has been found. Goto APP info panel to check.');
+						}
 					}
 					else {
 						_this.checkUpdateError = false;
@@ -323,6 +445,97 @@ var app = new Vue({
 		},
 		openHomePage: function() {
 			shell.openExternal(package.homepage);
+		},
+		clearLog() {
+			fs.access(logFile, err => {
+				if(err) {
+					this.$Message.success('Clear history successfully');
+					return;
+				}
+				fs.unlink(logFile, err => {
+					if(err) {
+						this.$Message.error('Occur error when clear history');
+						return;
+					}
+					this.$Message.success('Clear history successfully');
+				})
+			})
+		},
+		resetConfig() {
+			let isErr = false;
+			this.passwd = "password";
+			this.autoAuth = false;
+			this.autoStartEnd = true;
+			this.timeout = '8';
+			isErr = !saveSettings();
+			try {
+				fs.writeFileSync(soapListFile, fs.readFileSync(defListFile));
+			}
+			catch(err) {
+				isErr = true;
+			}
+			if(isErr) {
+				this.$Message.error('Occur error when reset configurations');
+				return;
+			}
+			bindMethodAndAction();
+			this.$Message.success('Reset configurations successfully');
+		},
+		openFileManage() {
+			dialog.showOpenDialog({
+				properties: ['openDirectory']
+			}, filePaths => {
+				if(Array.isArray(filePaths) && filePaths.length > 0) {
+					this.oldAppPath = filePaths[0];
+				}
+			});
+		},
+		importLog() {
+			if(this.oldAppPath === '') {
+				this.$Message.warning('Select old App root folder on the right firstly');
+				return;
+			}
+			let oldPath = path.join(this.oldAppPath, './runningLog');
+			fs.access(oldPath, err => {
+				if(err) {
+					this.$Message.error('Can not find history in this folder');
+					return;
+				}
+				try {
+					fs.writeFileSync(logFile, fs.readFileSync(oldPath));
+					this.$Message.success('Import history successfully');
+				}
+				catch(err) {
+					this.$Message.error('Occur error when import history');
+				}
+			})
+		},
+		importList() {
+			if(this.oldAppPath === '') {
+				this.$Message.warning('Select old App root folder on the right firstly');
+				return;
+			}
+			let oldPath = path.join(this.oldAppPath, './soap-list.json');
+			fs.access(oldPath, err => {
+				if(err) {
+					oldPath = path.join(this.oldAppPath, './resources/app.asar/soap-list/soap-list.json');
+					try {
+						fs.accessSync(oldPath);
+					}
+					catch(err) {
+						this.$Message.error('Can not find SOAP list in this folder');
+						return;
+					}
+				}
+				try {
+					fs.writeFileSync(soapListFile, fs.readFileSync(oldPath));
+					this.$Message.success('Import SOAP list successfully');
+					bindMethodAndAction();
+				}
+				catch(err) {
+					this.$Message.error('Occur error when import SOAP list');
+				}
+			})
 		}
 	},
 	created: function() {
@@ -336,7 +549,7 @@ var app = new Vue({
 
 		this.$Message.config({
 			top: 10,
-			duration: 7
+			duration: 5
 		});
 	},
 	mounted: function() {
@@ -350,6 +563,8 @@ var app = new Vue({
 		setTimeout(function() {
 			_this.firstLoading = false;
 		}, 1000);
+
+		this.checkUpdate(true);
 	},
 	updated: function() {
 		//Prism.highlightAll(true);

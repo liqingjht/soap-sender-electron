@@ -68,3 +68,39 @@ ipcMain.on('mini-main-window', function() {
 ipcMain.on('update-settings', function(event, config) {
 	saveConfig(config);
 });
+
+ipcMain.on('print-pdf', function(event, pdfLogs) {
+	let win = new BrowserWindow({
+		show: false,
+		width: 800,
+        height: 1200
+	});
+	//win.webContents.openDevTools();
+	win.loadURL(reUrl.format({
+        pathname: path.join(__dirname, "html/print.html"),
+        protocol: 'file:'
+	}))
+
+	win.webContents.on('did-finish-load', () => {
+		win.webContents.send('get-pdf-logs', pdfLogs);
+	})
+
+	ipcMain.once('create-pdf', (event, savePath) => {
+		let cur = new Date();
+		let now = `${cur.getFullYear()}-${cur.getMonth() + 1}-${cur.getDate()}`;
+		saver = path.join(savePath, `./Soap-Sender-${now}.pdf`);
+		win.webContents.printToPDF({
+			marginsType: 0,
+			pageSize: 'A4',
+			printBackground: true
+		}, (err, data) => {
+			fs.writeFile(saver, data, (error) => {
+				if (error) {
+					mainWindow.webContents.send('pdf-error');
+					return;
+				}
+				mainWindow.webContents.send('pdf-success', path.basename(saver));
+			})
+		})
+	})
+});

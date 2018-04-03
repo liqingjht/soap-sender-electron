@@ -36,7 +36,11 @@ const login = [
 ]
 
 /*string, string, array, array*/
-function requestOption(ip, method, action, headers, params) {
+function requestOption(ip, method, action, headers, params, timeout) {
+	if(timeout === undefined)
+		timeout = 15000;
+	else
+		timeout = parseInt(timeout) * 1000;
 	let isLoginAPI = (method === "ParentalControl" && action === "Authenticate");
 	let len = headers.length;
 	let headObj = {};
@@ -44,7 +48,7 @@ function requestOption(ip, method, action, headers, params) {
 		headObj[headers[i][0]] = headers[i][1];
 	}
 	let option = {
-		timeout: 15000,
+		timeout: timeout,
 		time: true,
 		headers: headObj
 	};
@@ -120,8 +124,8 @@ function checkResponCode(err, data) {
 }
 
 function sendSoap(callback) {
-	let {dutIP, method, action, reqHeaders, reqParams} = app;
-	let option = requestOption(dutIP, method, action, reqHeaders, reqParams);
+	let {dutIP, method, action, reqHeaders, reqParams, timeout} = app;
+	let option = requestOption(dutIP, method, action, reqHeaders, reqParams, timeout);
 	postFunc(option, function(err, resp, data) {
 		callback(err, resp, data);
 	})
@@ -133,7 +137,7 @@ async function sendAuth() {
 		["NewUsername", "admin"],
 		["NewPassword", app.passwd],
 	];
-	let option = requestOption(dutIP, "ParentalControl", "Authenticate", defaultHeader(), params);
+	let option = requestOption(dutIP, "ParentalControl", "Authenticate", defaultHeader(), params, 2);
 	return await postFunc(option, function(err, resp, data) {
 		return checkResponCode(err, data);
 	})
@@ -141,7 +145,7 @@ async function sendAuth() {
 
 async function sendConfigStart() {
 	let dutIP = app.dutIP;
-	let option = requestOption(dutIP, "DeviceConfig", "ConfigurationStarted", defaultHeader(), []);
+	let option = requestOption(dutIP, "DeviceConfig", "ConfigurationStarted", defaultHeader(), [], 2);
 	return await postFunc(option, function(err, resp, data) {
 		return checkResponCode(err, data);
 	})
@@ -149,7 +153,7 @@ async function sendConfigStart() {
 
 async function sendConfigFinish() {
 	let dutIP = app.dutIP;
-	let option = requestOption(dutIP, "DeviceConfig", "ConfigurationFinished", defaultHeader(), []);
+	let option = requestOption(dutIP, "DeviceConfig", "ConfigurationFinished", defaultHeader(), [], 2);
 	return await postFunc(option, function(err, resp, data) {
 		return checkResponCode(err, data);
 	})
@@ -160,15 +164,34 @@ function sendAuthForPasswd(dutIP, passwd, callback) {
 		["NewUsername", "admin"],
 		["NewPassword", passwd],
 	];
-	let option = requestOption(dutIP, "ParentalControl", "Authenticate", defaultHeader(), params);
+	let option = requestOption(dutIP, "ParentalControl", "Authenticate", defaultHeader(), params, 2);
+	postFunc(option, function(err, resp, data) {
+		callback(!checkResponCode(err, data));
+	})
+}
+
+function sendSoapLogin(dutIP, passwd, callback) {
+	let params = [
+		["Username", "admin"],
+		["Password", passwd],
+	];
+	let option = requestOption(dutIP, "DeviceConfig", "SOAPLogin", defaultHeader(), params, 2);
+	postFunc(option, function(err, resp, data) {
+		callback(!checkResponCode(err, data), resp);
+	})
+}
+
+function sendSoapLogout(dutIP, cookie, callback) {
+	let headers = defaultHeader();
+	headers.push(['Cookie', cookie]);
+	let option = requestOption(dutIP, "DeviceConfig", "SOAPLogout", headers, [], 2);
 	postFunc(option, function(err, resp, data) {
 		callback(!checkResponCode(err, data));
 	})
 }
 
 function updateDeviceInfo(ip) {
-	let option = requestOption(ip, "DeviceInfo", "GetInfo", defaultHeader(), []);
-	option.timeout = 1000;
+	let option = requestOption(ip, "DeviceInfo", "GetInfo", defaultHeader(), [], 1);
 	postFunc(option, function(err, res, body) {
 		if(!err && res.statusCode === 200) {
 			let $ = cheerio.load(body);
@@ -199,6 +222,8 @@ function postFunc(option, callback) {
 }
 
 function setTimings(newTiming) {
+	if(newTiming === undefined)
+		return;
 	let {lookup=0, socket=0, connect=0, response=0, end=0} = newTiming;
 	vSet(app.timings, ...[
 		["lookup", lookup.toFixed(3)],
@@ -217,8 +242,32 @@ function stringifyHeader(headers) {
 	return str;
 }
 
+function getCookie(resp) {
+	if(resp === undefined || resp.headers === undefined)
+		return '';
+	let headers = resp.headers;
+	let cookie = '';
+	for(let key in headers) {
+		let temp = key.toLowerCase();
+		if(temp === 'set-cookie') {
+			let arr = headers[temp];
+			for(let j=0; j<arr.length; j++) {
+				if(arr[j].includes('jwt_local')) {
+					cookie = arr[j];
+				}
+			}
+		}
+	}
+	return cookie;
+}
+
 function setResponDetail(resp) {
+	if(resp === undefined)
+		return;
+	let {httpVersion = '1.0', statusCode = '500', statusMessage = 'Unknown Error'} = resp;
 	var respHeader = `HTTP ${resp.httpVersion} ${resp.statusCode} ${resp.statusMessage}\n` + stringifyHeader(resp.headers);
+	if(statusCode === '500')
+		return;
 	Vue.set(app.detailObj, "reqHeader", stringifyHeader(resp.request.headers));
 	Vue.set(app.detailObj, "reqBody", resp.request.body);
 	Vue.set(app.detailObj, "rspHeader", respHeader);
@@ -229,7 +278,7 @@ function getVersion(homepage, callback) {
 	var option = {};
 	option.url = homepage + "/getLastVersion";
 	option.timeout = 2000;
-	request.get(option, function(err, res, data) {console.log(data)
+	request.get(option, function(err, res, data) {
 		if(!err && res.statusCode === 200) {
 			data = data.trim();
 			if(/^\d+\.\d+\.\d+$/.test(data) === false) {

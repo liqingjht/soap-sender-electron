@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>SOAP-Sender</title>
+	<link href="css/lib/font-awesome.min.css" rel="stylesheet">
+	<link href="css/lib/prism.css" rel="stylesheet">
+	<link href="css/lib/iview.css" rel="stylesheet">
+	<link href="css/print.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class='copyright'>Powered by DNI Soap-Sender</div>
+	<div id='main'>
+		<div class='one-request' v-for="obj in pdfLogs">
+			<div :class="rowClassName(obj.resCode)">
+				<div>{{ obj.model }}</div>
+				<div>{{ obj.method}} : {{ obj.action }}</div>
+				<div>Code: {{ obj.resCode }}</div>
+				<div>Cost: {{ obj.costTime }} (ms)</div>
+			</div>
+			<div class='title-header' style='color: #2d8cf0'>Request Package <span >&gt;&gt;&gt;</span></div>
+			<pre><code class="language-http" style='white-space: pre-wrap'><span class='http-wrap' v-html="getPrettyReqHeader(obj)"></span></code></pre>
+			<div>&nbsp;</div>
+			<pre><code class="language-markup" style='white-space: pre-wrap'><span v-html="getPrettyBody(obj.reqBody)"></span></code></pre>
+			<div class='title-header' style='color: #ff9900'>Response Package <span >&lt;&lt;&lt;</span></div>
+			<pre><code class="language-http" style='white-space: pre-wrap'><span class='http-wrap' v-html="getPrettyResHeader(obj)"></span></code></pre>
+			<div>&nbsp;</div>
+			<pre><code class="language-markup" style='white-space: pre-wrap'><span v-html="getPrettyBody(obj.resBody)"></span></code></pre>
+		</div>
+	</div>
+
+	<script src="js/lib/prism.js"></script>
+	<script src="js/lib/vue.min.js"></script>
+	<script src="js/lib/iview.min.js"></script>
+	<script src="js/util.js"></script>
+	<script src="js/print.js"></script>
+</body>
+
+</html>

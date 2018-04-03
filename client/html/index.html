@@ -81,7 +81,16 @@
 								</i-input>
 							</div>
 							<div class="one-input">
-								<div>Auto Send Authenticate</div>
+								<div>API Timeout (S)</div>
+								<i-input
+									v-model.number="timeout"
+									placeholder=""
+									style="width: 200px"
+									@change.native="checkTimeout">
+								</i-input>
+							</div>
+							<div class="one-input">
+								<div>Auto Send ParentalControl:Authenticate</div>
 								<div>
 									<i-switch v-model="autoAuth">
 										<Icon type="android-done" slot="open"></Icon>
@@ -97,6 +106,14 @@
 										<Icon type="android-close" slot="close"></Icon>
 									</i-switch>
 								</div>
+							</div>
+							<div class="one-input">
+								<div>Login by SOAPLogin API</div>
+								<div><i-button type="primary" style='width: 115px;' @click="soapLogin" :disabled="loginStatus">Login</i-button></div>
+							</div>
+							<div class="one-input">
+								<div>Logout by SOAPLogout API</div>
+								<div><i-button type="primary" style='width: 115px;' @click="soapLogout" :disabled="logoutStatus">Logout</i-button></div>
 							</div>
 						</Card>
 					</i-col>
@@ -155,7 +172,7 @@
 											<div class="option-rm-icon" @click="rmReqHeader"><Icon type="close-round"></Icon></div>
 										</div>
 									</Card>
-									<i-button type="primary" :loading="optSending" @click="optSend" class="opt-send-btn">
+									<i-button type="primary" :loading="optSending" @click="optSend" class="opt-send-btn" :disabled='sendStatus'>
 										<span v-if="!optSending">Send</span>
 										<span v-else>Sending...</span>
 									</i-button>
@@ -240,6 +257,7 @@
 			</div>
 
 			<div v-if="navIndex === 2">
+				<div><i-button type="info" style='width: 145px;' @click="exportPdf">Export PDF</i-button></div>
 				<Scroll :on-reach-bottom="handleReachBottom" id="scroll-main" loading-text="Loading">
 					<!--<collapse accordion>
 						<panel v-for="(v, k) in logItems" :name="k">
@@ -260,13 +278,14 @@
 						:row-class-name="rowClassName"
 						:data="logItems"
 						no-data-text="No Data Yet"
+						@on-selection-change='handleSelect'
 						strip>
 					</i-table>
 				</Scroll>
 			</div>
 
 			<div v-if="navIndex === 3">
-				<Row style="margin-top: 50px;">
+				<Row>
 					<i-col span="4" offset="2">
 						<div class="app-info">
 							<div>APP Name:</div>
@@ -288,9 +307,9 @@
 					</i-col>
 					<i-col span="2"></i-col>
 				</Row>
-				<br><br><hr width="98%"><br><br>
+				<br><hr width="98%"><br>
 				<div style="text-align: center">
-					<div style="margin-top: 5px; margin-bottom: 25px;">
+					<div style="margin-bottom: 20px;">
 						<i-button type="primary" @click="checkUpdate" :disabled="checking">Check Update</i-button>
 					</div>
 					<div v-if="checking === false">
@@ -303,7 +322,37 @@
 							<div>Error to check update.</div>
 						</div>
 					</div>
+					<div v-else><div>&nbsp;</div></div>
 				</div>
+
+				<br><hr width="98%"><br>
+
+				<div class="app-info" style="margin-left: 46px;">
+					<div>
+						<i-button type="error" style='width: 145px;' @click="clearLog">Clear History</i-button>
+						<span>(Notice that it will clear all history)</span>
+					</div>
+					<div>
+						<i-button type="warning" style='width: 145px;' @click="resetConfig">Reset Configurations</i-button>
+						<span>(Including configuration of auto action、password and SOAP list)</span>
+					</div>
+				</div>
+
+				<br><hr width="98%"><br>
+
+				<Row>
+					<i-col span="4">
+						<div class="app-info" style="margin-left: 46px;">
+							<div><i-button type="primary" style='width: 145px;' @click="importLog">Import History</i-button></div>
+							<div><i-button type="primary" style='width: 145px;' @click="importList">Import SOAP List</i-button></div>
+						</div>
+					</i-col>
+					<i-col span="14" offset="2">
+						<div class='fileSelection' @click="openFileManage">Select old APP root folder</div>
+						<div class='oldPath' v-if="oldAppPath !== ''">Selected Folder: {{oldAppPath}}</div>
+					</i-col>
+					<i-col span="2"></i-col>
+				</Row>
 			</div>
 			<Spin size="large" fix v-if="firstLoading"></Spin>
 		</div>

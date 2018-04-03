@@ -1,5 +1,6 @@
 const { ipcRenderer, clipboard, shell } = require('electron');
 var remote = require('electron').remote;
+const {dialog} = remote;
 var currentWindow = remote.getGlobal("mainWindow");
 
 const os = require('os');
@@ -13,8 +14,19 @@ const package = require(path.join(__dirname, "../package.json"));
 
 const cwd = process.cwd();
 const logFile = path.join(cwd, "./runningLog");
-const soapListFile = path.join(__dirname, "../soap-list/soap-list.json");
+const defListFile = path.join(__dirname, '../soap-list/soap-list.json'); // __dirname is html
+const soapListFile = path.join(cwd, "./soap-list.json");
 const configFile = path.join(cwd, "./configuration");
+
+try {
+	fs.accessSync(soapListFile);
+}
+catch(err) {
+	try{
+		fs.writeFileSync(soapListFile, fs.readFileSync(defListFile));
+	}
+	catch(err){/*do nothing*/}
+}
 
 var sessionID = "DNI-Soap-Sender-Session-ID-X";
 var config = undefined;
@@ -72,6 +84,11 @@ function defaultDetailObj() {
 
 function logsTableHeader() {
 	return  [
+		{
+			type: 'selection',
+			width: 60,
+			align: 'center'
+		},
 		{
 			title: "Time",
 			key: "testTime",
@@ -156,17 +173,25 @@ try {
 	if(conf.passwd !== undefined && conf.autoStartEnd !== undefined && conf.autoAuth !== undefined) {
 		config = conf;
 	}
+	if(config.timeout === undefined)
+		config.timeout = '8';
 }
 catch(err) {}
 
-ipcRenderer.on("save-settings", function() {
+function saveSettings() {
 	var conf = {
 		passwd: app.passwd,
 		autoAuth: app.autoAuth,
-		autoStartEnd: app.autoStartEnd
+		autoStartEnd: app.autoStartEnd,
+		timeout: app.timeout
 	}
 	try {
 		fs.writeFileSync(configFile, JSON.stringify(conf), 'utf-8');
+		return true;
 	}
-	catch(err) {}
-})
+	catch(err) {
+		return false;
+	}
+}
+
+ipcRenderer.on("save-settings", saveSettings)

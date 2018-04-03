@@ -1,6 +1,6 @@
 {
   "name": "Soap-Sender",
-  "version": "1.0.3",
+  "version": "1.0.9",
   "author": "liqingjht",
   "email": "liqingjht@163.com",
   "homepage": "http://172.17.92.252:7168",
@@ -17,7 +17,7 @@
     "Electron",
     "SOAP"
   ],
-  "license": "MIT",
+  "license": "MPL",
   "devDependencies": {
     "electron": "^1.8.4",
     "electron-packager": "^11.2.0"
