@@ -29,33 +29,19 @@ client: 用来构建客户端软件
 
 ----------
 
-
-<p>最新版本： 1.0.1</p>
-
-<blockquote>
-<p>1.0.1 更新记录</p>
-<ol>
-<li>优化基本设置页面判断 IP 和密码的响应时间</li>
-<li>保存基本设置页面的设置</li>
-<li>历史记录添加 Response Time 的排序</li>
-<li>历史记录添加删除按钮</li>
-<li>历史记录添加导入数据到发送页面</li>
-<li>历史记录添加 Response Code 0 和非 0 的颜色区分</li>
-<li>添加检查新版本</li>
-</ol>
-</blockquote>
-<hr />
 <p>使用说明：</p>
 <ol>
 <li>
 <p><strong>下载和使用</strong></p>
 <p>1-1. 软件下载后 .zip 后缀，解压缩后得到一个 exe 自解压文件。双击 exe 文件解压后得到一个文件夹。运行文件夹里面 Soap-Sender.exe 文件就可以使用软件。你也可以对这个文件做一个快捷方式。</p>
 <p>1-2. 如果你更新了软件，但是又想要保留原来 SOAP 列表，那么从旧软件的 soap-list 目录下拷贝 soap-list.json 替换新软件相应文件即可。</p>
-<p>1-3. 如果你更新了软件，但是又想要保留原来的设置和记录，那么从旧软件的主目录下拷贝 configuration 和 runningLog 到新软件主目录下即可。</p>
+<p>1-3. 如果你更新了软件，但是又想要保留原来的设置和记录，在新软件的版本信息页面选择旧软件的根目录，点击导入即可。</p>
 </li>
 <li>
 <p><strong>导航菜单</strong></p>
-<p><img src="/server/image/navagation.png" /></p>
+<p><img src="/server/image/basic.png" /></p>
+<p>2-1. 右上从左到右分别为： 软件界面锁定在顶层开关，最小化和关闭</p>
+<p>2-2. 左边导航从上到下分别为：导航伸缩开关，基本设置页面，发包页，历史记录页和软件版本信息和设置页</p>
 </li>
 <li>
 <p><strong>基本设置页</strong></p>
@@ -88,6 +74,10 @@ client: 用来构建客户端软件
 <p>5-5. 每条记录可以删除。</p>
 <p>5-6. 如果点击 Resend 按钮，那么页面会跳到发送构造 SOAP 发送请求的页面。并且根据历史纪录来填写 method、action、SOAP Header 和所需参数，同时也会清除上一次请求的信息。</p>
 </li>
+
+<p><b>选择几条历史记录，可以将记录导出成具有漂亮格式的 PDF 报告</b></p>
+<p><img src="/server/image/pdf-reporter.png" /></p>
+
 <li>
 <p><strong>版本信息</strong></p>
 <p><img src="/server/image/app-version.png" /></p>
@@ -97,4 +87,15 @@ client: 用来构建客户端软件
 </ol>
 <hr />
 <p>历史更新记录：</p>
-<p>无</p>
+<blockquote>
+<p>1.0.1 更新记录</p>
+<ol>
+<li>优化基本设置页面判断 IP 和密码的响应时间</li>
+<li>保存基本设置页面的设置</li>
+<li>历史记录添加 Response Time 的排序</li>
+<li>历史记录添加删除按钮</li>
+<li>历史记录添加导入数据到发送页面</li>
+<li>历史记录添加 Response Code 0 和非 0 的颜色区分</li>
+<li>添加检查新版本</li>
+</ol>
+</blockquote>
