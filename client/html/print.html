@@ -14,12 +14,28 @@
 <body>
 	<div class='copyright'>Powered by DNI Soap-Sender</div>
 	<div id='main'>
-		<div class='one-request' v-for="obj in pdfLogs">
-			<div :class="rowClassName(obj.resCode)">
+		<div class='contents'>
+			<div class='title'>Contents</div>
+			<div class='list'>
+				<ol>
+					<li v-for="(obj, index) in pdfLogs">
+						<a :href="'#item-' + index" class='link'>
+							<div :id="'item-' + index">
+								<div>{{index + 1}}. {{ obj.model }}</div>
+								<div>{{ obj.method}} : {{ obj.action }}</div>
+								<div>Code: {{ obj.resCode }}</div>
+							</div>
+						</a>
+					</li>
+				</ol>
+			</div>
+		</div>
+		<div class='one-request' v-for="(obj, index) in pdfLogs">
+			<div :class="rowClassName(obj.resCode)" :id="'item-' + index">
 				<div>{{ obj.model }}</div>
 				<div>{{ obj.method}} : {{ obj.action }}</div>
 				<div>Code: {{ obj.resCode }}</div>
-				<div>Cost: {{ obj.costTime }} (ms)</div>
+				<div>{{ obj.costTime }} (ms)</div>
 			</div>
 			<div class='title-header' style='color: #2d8cf0'>Request Package <span >&gt;&gt;&gt;</span></div>
 			<pre><code class="language-http" style='white-space: pre-wrap'><span class='http-wrap' v-html="getPrettyReqHeader(obj)"></span></code></pre>

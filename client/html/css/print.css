@@ -51,3 +51,23 @@ pre {
 	border-bottom: 1px solid #b7b8b9;
 	padding: 3px auto;
 }
+
+.contents {
+	margin: 0 15px 20px 15px;
+}
+
+.contents .title {
+	text-align: center;
+    font-size: 1.7em;
+    font-weight: 400;
+}
+
+.contents .link>div {
+	display: inline-flex;
+	width: 97%;
+	color: #13aada;
+    font-size: 1.25em;
+    justify-content: space-between;
+    margin: 5px auto;
+    border-bottom: 1px solid;
+}
