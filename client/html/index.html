@@ -374,7 +374,7 @@
 					</i-col>
 					<i-col span="14" offset="2">
 						<div class='fileSelection' @click="openFileManage">Select old APP root folder</div>
-						<div class='oldPath' v-if="oldAppPath !== ''">Selected Folder: {{oldAppPath}}</div>
+						<div class='oldPath' v-if="oldAppPath !== ''" @click='openSavePath'>Selected Folder: {{oldAppPath}}</div>
 					</i-col>
 					<i-col span="2"></i-col>
 				</Row>

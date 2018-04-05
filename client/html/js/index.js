@@ -541,6 +541,7 @@ var app = new Vue({
 							return;
 						}
 						_this.$Message.success(`Exported ${path.basename(savePath)}`);
+						shell.showItemInFolder(savePath);
 					})
 				}
 			});
@@ -676,6 +677,9 @@ var app = new Vue({
 					this.$Message.error('Occur error when import SOAP list');
 				}
 			})
+		},
+		openSavePath() {
+			shell.showItemInFolder(this.oldAppPath);
 		}
 	},
 	created: function() {

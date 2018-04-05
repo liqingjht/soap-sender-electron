@@ -1,4 +1,4 @@
-var { app, BrowserWindow, ipcMain } = require('electron');
+var { app, BrowserWindow, ipcMain, shell } = require('electron');
 var path = require('path');
 var reUrl = require('url');
 var fs = require("fs");
@@ -104,6 +104,7 @@ ipcMain.on('print-pdf', function(event, pdfLogs) {
 					return;
 				}
 				mainWindow.webContents.send('pdf-end', path.basename(saver), 0);
+				shell.showItemInFolder(saver);
 			})
 		})
 	})

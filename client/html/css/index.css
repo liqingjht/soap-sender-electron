@@ -217,6 +217,7 @@ td.ivu-table-expanded-cell {
 
 .oldPath {
 	margin-top: 25px;
+	cursor: pointer;
 }
 
 /*animations*/
