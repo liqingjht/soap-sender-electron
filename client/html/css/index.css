@@ -149,17 +149,17 @@ body {
 	height: 690px !important;
 }
 
-.ivu-table .row-error-code td:nth-of-type(6){
+.ivu-table .row-error-code td:nth-of-type(7){
 	background-color: #ed3f14;
 	color: #fff;
 }
 
-.ivu-table .row-success-code td:nth-of-type(6){
+.ivu-table .row-success-code td:nth-of-type(7){
 	background-color: #19be6b;
 	color: #fff;
 }
 
-.ivu-table .row-invalid-code td:nth-of-type(6){
+.ivu-table .row-invalid-code td:nth-of-type(7){
 	background-color: #ff9900;
 	color: #fff;
 }
