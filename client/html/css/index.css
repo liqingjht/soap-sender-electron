@@ -21,6 +21,10 @@ body {
 .ivu-message-notice-content-text .ivu-message-custom-content span {
 	font-size: 1.2em;
 }
+
+.ivu-tabs-nav-scroll-disabled {
+	display: none;
+}
 /********0*********/
 .setting-card .ivu-card-body > div {
 	margin-top: 10px;
@@ -98,7 +102,7 @@ body {
 }
 
 .option-rm-icon:hover {
-	color: #ed3f14
+	color: #ff3300
 }
 
 .option-plus-icon {
@@ -112,7 +116,7 @@ body {
 }
 
 .option-plus-icon:hover {
-	color: #2d8cf0;
+	color: #2db7f5;
 }
 
 #pretty-response, #raw-response {
@@ -156,12 +160,12 @@ body {
 }
 
 .ivu-table .row-error-code td:nth-of-type(7){
-	background-color: #ed3f14;
+	background-color: #ff3300;
 	color: #fff;
 }
 
 .ivu-table .row-success-code td:nth-of-type(7){
-	background-color: #19be6b;
+	background-color: #00cc66;
 	color: #fff;
 }
 
@@ -211,8 +215,8 @@ td.ivu-table-expanded-cell {
 }
 
 .fileSelection:hover {
-	border-color: #2d8cf0;
-	color: #2d8cf0;
+	border-color: #2db7f5;
+	color: #2db7f5;
 }
 
 .oldPath {

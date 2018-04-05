@@ -14,7 +14,7 @@
 
 .basic-info {
 	width: 97%;
-	background: #19be6b;
+	background: #00cc66;
 	color: white;
 	font-size: 1.5em;
 	display: flex;
@@ -28,7 +28,7 @@
 }
 
 .error {
-	background: #ed3f14;
+	background: #ff3300;
 }
 
 .invalid {
@@ -65,7 +65,7 @@ pre {
 .contents .link>div {
 	display: inline-flex;
 	width: 97%;
-	color: #13aada;
+	color: #2db7f5;
     font-size: 1.25em;
     justify-content: space-between;
     margin: 5px auto;
