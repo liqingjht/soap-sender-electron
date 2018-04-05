@@ -8,6 +8,8 @@
 	<link href="css/lib/font-awesome.min.css" rel="stylesheet">
 	<link href="css/lib/prism.css" rel="stylesheet">
 	<link href="css/lib/iview.css" rel="stylesheet">
+	<link href="css/lib/animate.css" rel="stylesheet">
+	<link href="css/lib/hover-min.css" rel="stylesheet">
 	<link href="css/nav.css" rel="stylesheet">
 	<link href="css/index.css" rel="stylesheet">
 </head>
@@ -43,13 +45,13 @@
 
 		<div class="title-head">
 			<ul class="action_list">
-				<li class="window_action" @click="toggleWinTop">
+				<li class="hvr-grow-shadow window_action" @click="toggleWinTop">
 					<a href="#1" class="window_lock"><i class="fa" :class="winTop? 'fa-lock': 'fa-unlock-alt'"></i></a>
 				</li>
-				<li class="window_action" @click="winMini">
+				<li class="hvr-grow-shadow window_action" @click="winMini">
 					<a href="#2" class="window_mini"><i class="fa fa-minus"></i></a>
 				</li>
-				<li class="window_action" @click="winClose">
+				<li class="hvr-grow-shadow window_action" @click="winClose">
 					<a href="#3" class="window_close"><i class="fa fa-power-off"></i></a>
 				</li>
 			</ul>
@@ -121,8 +123,8 @@
 						<Card class="router-info-card">
 							<p slot="title">Router Information</p>
 							<div class="one-info" v-for="(value, key) in routerInfo">
-								<div>{{keyMapping[key]}}</div>
-								<div>{{value}}</div>
+								<div><span class="hvr-grow-rotate">{{keyMapping[key]}}</span></div>
+								<div><span class="hvr-grow-rotate">{{value}}</span></div>
 							</div>
 						</Card>
 					</i-col>
@@ -166,11 +168,13 @@
 											<span>SOAP Headers</span>
 											<div class="option-plus-icon" @click="addNewHeader"><Icon type="plus-round"></Icon></div>
 										</p>
-										<div class="one-option" v-for="(v, k) in reqHeaders" :data-index="k">
-											<div><i-input v-model.trim="v[0]" placeholder="" :disabled="optSending"></i-input></div>
-											<div><i-input v-model.trim="v[1]" placeholder="" :disabled="optSending"></i-input></div>
-											<div class="option-rm-icon" @click="rmReqHeader"><Icon type="close-round"></Icon></div>
-										</div>
+										<transition-group name="opt-list" tag="div">
+											<div class="one-option" v-for="(v, k) in reqHeaders" :key="'item' + k">
+												<div><i-input v-model.trim="v[0]" placeholder="" :disabled="optSending"></i-input></div>
+												<div><i-input v-model.trim="v[1]" placeholder="" :disabled="optSending"></i-input></div>
+												<div><div class="option-rm-icon" @click="rmReqHeader(k)"><Icon type="close-round"></Icon></div></div>
+											</div>
+										</transition-group>
 									</Card>
 									<i-button type="primary" :loading="optSending" @click="optSend" class="opt-send-btn" :disabled='sendStatus'>
 										<span v-if="!optSending">Send</span>
@@ -183,11 +187,13 @@
 											<span>SOAP Parameters</span>
 											<div class="option-plus-icon" @click="addNewParam"><Icon type="plus-round"></Icon></div>
 										</p>
-										<div class="one-option" v-for="(v, k) in reqParams" :data-index="k">
-											<div><i-input v-model.trim="v[0]" placeholder="" :disabled="optSending"></i-input></div>
-											<div><i-input v-model.trim="v[1]" placeholder="" :disabled="optSending"></i-input></div>
-											<div class="option-rm-icon" @click="rmReqParam"><Icon type="close-round"></Icon></div>
-										</div>
+										<transition-group name="opt-list" tag="div">
+											<div class="one-option" v-for="(v, k) in reqParams" :key="'item' + k">
+												<div><i-input v-model.trim="v[0]" placeholder="" :disabled="optSending"></i-input></div>
+												<div><i-input v-model.trim="v[1]" placeholder="" :disabled="optSending"></i-input></div>
+												<div><div class="option-rm-icon" @click="rmReqParam(k)"><Icon type="close-round"></Icon></div></div>
+											</div>
+										</transition-group>
 									</Card>
 								</i-col>
 							</Row>
@@ -215,13 +221,15 @@
 							<Button-group style="position: absolute; right: 17px; display:inline;">
 								<i-button type="ghost" icon="wand" @click="togglePretty"></i-button>
 								<i-button type="ghost" icon="code" @click="copyResponse"></i-button>
-							</Button-group>
-							<pre v-if="showPretty" id="pretty-response">
-								<code class="language-markup" key="no-reuse-resp-htm"><span class='package-break-line' v-html="prettyResp"></span></code>
-							</pre>
-							<pre v-if="!showPretty" id="raw-response">
-								<span key="no-reuse-resp-txt" class='package-break-line'>{{responseTxt}}</span>
-							</pre>
+							</Button-group><div>
+							<transition enter-active-class="animated flipInY" leave-active-class="animated flipOutY">
+								<pre v-if="showPretty" id="pretty-response" key='pretty'>
+									<code class="language-markup" key="no-reuse-resp-htm"><span class='package-break-line' v-html="prettyResp"></span></code>
+								</pre>
+								<pre v-else id="raw-response" key='raw'>
+									<span key="no-reuse-resp-txt" class='package-break-line'>{{responseTxt}}</span>
+								</pre>
+							</transition></div>
 						</Card>
 					</tab-pane>
 					<tab-pane label="HTTP Details" name="details">
@@ -305,18 +313,18 @@
 				<Row>
 					<i-col span="4" offset="2">
 						<div class="app-info">
-							<div>APP Name:</div>
-							<div>Version:</div>
-							<div>Author:</div>
-							<div>E-Mail:</div>
+							<div><span class="hvr-float-shadow">APP Name:</span></div>
+							<div><span class="hvr-float-shadow">Version:</span></div>
+							<div><span class="hvr-float-shadow">Author:</span></div>
+							<div><span class="hvr-float-shadow">E-Mail:</span></div>
 						</div>
 					</i-col>
 					<i-col span="8">
 						<div class="app-info">
-							<div>{{appName}}</div>
-							<div>{{version}}</div>
-							<div>{{author}}</div>
-							<div>{{email}}</div>
+							<div><span class="hvr-float-shadow">{{appName}}</span></div>
+							<div><span class="hvr-float-shadow">{{version}}</span></div>
+							<div><span class="hvr-float-shadow">{{author}}</span></div>
+							<div><span class="hvr-float-shadow">{{email}}</span></div>
 						</div>
 					</i-col>
 					<i-col span="6"  offset="2">

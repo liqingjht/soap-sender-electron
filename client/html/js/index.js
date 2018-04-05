@@ -238,8 +238,7 @@ var app = new Vue({
 			}
 			this.reqParams.push(["", ""]);
 		},
-		rmReqParam: function() {
-			let index = $(event.target).parents(".one-option").attr("data-index");
+		rmReqParam: function(index) {
 			this.reqParams.splice(index, 1);
 		},
 		addNewHeader: function() {
@@ -257,8 +256,7 @@ var app = new Vue({
 			}
 			this.reqHeaders.push(["", ""]);
 		},
-		rmReqHeader: function(event) {
-			let index = $(event.target).parents(".one-option").attr("data-index");
+		rmReqHeader: function(index) {
 			let key = this.reqHeaders[index][0];
 			if(key.toLowerCase().trim() === 'cookie') {
 				this.$Message.warning('Remove cookie for this session. Login again to get Cookie if you need');

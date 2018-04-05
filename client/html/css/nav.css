@@ -272,3 +272,12 @@ ul {
 .window_action a {
 	color: #4A405B;
 }
+
+.action_list li a:hover {
+    font-size: 1.3em;
+}
+
+.action_list li {
+    width: 18px;
+    height: 35px;
+}
