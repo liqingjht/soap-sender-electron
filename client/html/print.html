@@ -14,13 +14,13 @@
 <body>
 	<div class='copyright'>Powered by DNI Soap-Sender</div>
 	<div id='main'>
-		<div class='contents'>
+		<div class='contents' v-if='pdfLogs.length > 1'>
 			<div class='title'>Contents</div>
 			<div class='list'>
 				<ol>
 					<li v-for="(obj, index) in pdfLogs">
 						<a :href="'#item-' + index" class='link'>
-							<div :id="'item-' + index">
+							<div>
 								<div>{{index + 1}}. {{ obj.model }}</div>
 								<div>{{ obj.method}} : {{ obj.action }}</div>
 								<div>Code: {{ obj.resCode }}</div>
