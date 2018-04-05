@@ -3,7 +3,7 @@ var remote = require('electron').remote;
 const {dialog} = remote;
 const format = require('xml-formatter');
 
-ipcRenderer.on('get-pdf-logs', (event, pdfLogs) => {
+ipcRenderer.once('get-pdf-logs', (event, pdfLogs) => {
 	Prism.plugins.NormalizeWhitespace.setDefaults({
 		'remove-trailing': true,
 		'remove-indent': true,
@@ -53,6 +53,9 @@ ipcRenderer.on('get-pdf-logs', (event, pdfLogs) => {
 			}, filePaths => {
 				if(Array.isArray(filePaths) && filePaths.length > 0) {
 					ipcRenderer.send('create-pdf', filePaths[0]);
+				}
+				else {
+					ipcRenderer.send('create-pdf', '', true);
 				}
 			});
 		}

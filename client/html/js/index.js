@@ -399,12 +399,15 @@ var app = new Vue({
 				return;
 			}
 			ipcRenderer.send('print-pdf', this.pdfLogs);
-			ipcRenderer.once('pdf-error', () => {
-				this.$Message.error('Occur error when import pdf');
+			ipcRenderer.once('pdf-end', (event, saver, status) => {
+				if(status === 1) {
+					this.$Message.error('Occur error when import pdf');
+					return;
+				}
+				else if(status === 0) {
+					this.$Message.success(`Exported ${saver}`);
+				}
 			});
-			ipcRenderer.once('pdf-success', (event, saver) => {
-				this.$Message.success(`Import ${saver}`);
-			})
 		},
 
 		checkUpdate: function(firstLoad) {

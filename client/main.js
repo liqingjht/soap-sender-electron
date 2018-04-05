@@ -81,11 +81,15 @@ ipcMain.on('print-pdf', function(event, pdfLogs) {
         protocol: 'file:'
 	}))
 
-	win.webContents.on('did-finish-load', () => {
+	win.webContents.once('did-finish-load', () => {
 		win.webContents.send('get-pdf-logs', pdfLogs);
 	})
 
-	ipcMain.once('create-pdf', (event, savePath) => {
+	ipcMain.once('create-pdf', (event, savePath, abort) => {
+		if(abort === true) {
+			mainWindow.webContents.send('pdf-end', '', -1);
+			return;
+		}
 		let cur = new Date();
 		let now = `${cur.getFullYear()}-${cur.getMonth() + 1}-${cur.getDate()}`;
 		saver = path.join(savePath, `./Soap-Sender-${now}.pdf`);
@@ -96,10 +100,10 @@ ipcMain.on('print-pdf', function(event, pdfLogs) {
 		}, (err, data) => {
 			fs.writeFile(saver, data, (error) => {
 				if (error) {
-					mainWindow.webContents.send('pdf-error');
+					mainWindow.webContents.send('pdf-end', '', 1);
 					return;
 				}
-				mainWindow.webContents.send('pdf-success', path.basename(saver));
+				mainWindow.webContents.send('pdf-end', path.basename(saver), 0);
 			})
 		})
 	})
