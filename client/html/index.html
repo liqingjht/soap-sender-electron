@@ -193,6 +193,20 @@
 							</Row>
 						</Card>
 					</tab-pane>
+					<tab-pane label="RAW" name="raw">
+						<Card class="request-card" style="overflow: auto;">
+							<i-input
+								v-model="rawPackage"
+								type="textarea"
+								:rows="24"
+								:autosize="{minRows: 24, maxRows: 24}"
+								placeholder="">
+							</i-input>
+							<div class='raw-btn-group'>
+								<i-button type="primary" style='width: 145px;' @click="parsePackage">Parse Package</i-button>
+							</div>
+						</Card>
+					</tab-pane>
         			<tab-pane label="Response" name="response">
 						<Card class="request-card" style="overflow: auto;">
 							<div style="position: absolute; left: 17px; display:inline; top:18px; font-size:17px;">
@@ -257,7 +271,10 @@
 			</div>
 
 			<div v-if="navIndex === 2">
-				<div><i-button type="info" style='width: 145px;' @click="exportPdf">Export PDF</i-button></div>
+				<div class='export-btn-group'>
+					<i-button type="info" style='width: 145px;' @click="exportPdf">Export PDF</i-button>
+					<i-button type="info" style='width: 145px; margin-left: 30px;' @click="exportTxt">Export TXT</i-button>
+				</div>
 				<Scroll :on-reach-bottom="handleReachBottom" id="scroll-main" loading-text="Loading">
 					<!--<collapse accordion>
 						<panel v-for="(v, k) in logItems" :name="k">

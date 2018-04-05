@@ -144,6 +144,10 @@ body {
 	overflow: auto;
 }
 
+.raw-btn-group {
+	margin: 15px auto;
+	text-align: center;
+}
 /*****************/
 #scroll-main .ivu-scroll-container {
 	height: 690px !important;
@@ -172,6 +176,12 @@ td.ivu-table-expanded-cell {
 	white-space: pre-wrap;
     word-wrap: break-word;
     word-break: break-all;
+}
+
+.export-btn-group {
+	border-bottom: 1px solid grey;
+	padding-bottom: 10px;
+	width: 98%;
 }
 /****************/
 .app-info > div {

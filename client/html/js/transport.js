@@ -1,25 +1,25 @@
-function getBodyHeader(sessionID, action) {
+function getBodyHeader(sessionID, method, action) {
 	var str =
 `<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
 	<SOAP-ENV:Header>
 		<SessionID xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance">${sessionID}</SessionID>
 	</SOAP-ENV:Header>
 	<SOAP-ENV:Body>
-		<${action}>\n`;
+		<M1:${action} xmlns:M1="urn:NETGEAR-ROUTER:service:${method}:1">\n`;
 	
 	return str;
 }
 
 function getBodyFooter(action) {
 	var str = 
-`		</${action}>
+`		</M1:${action}>
 	</SOAP-ENV:Body>
 </SOAP-ENV:Envelope>`;
 
 	return str;
 }
 
-function getBody(sessionID, action, params) {
+function getBody(sessionID, method, action, params) {
 	let str = "";
 	if(params !== undefined && params.length > 0) {
 		for(let i=0; i<params.length; i++) {
@@ -27,7 +27,7 @@ function getBody(sessionID, action, params) {
 			str += `\t\t\t<${param[0]} xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance">${param[1]}</${param[0]}>\n`
 		}
 	}
-	return (getBodyHeader(sessionID, action) + str + getBodyFooter(action));
+	return (getBodyHeader(sessionID, method, action) + str + getBodyFooter(action));
 }
 
 const login = [
@@ -53,7 +53,7 @@ function requestOption(ip, method, action, headers, params, timeout) {
 		headers: headObj
 	};
 	option.headers.SOAPAction = `urn:NETGEAR-ROUTER:service:${method}:1#${action}`;
-	option.body = getBody(sessionID, action, params);
+	option.body = getBody(sessionID, method, action, params);
 	option.headers["content-length"] = option.body.length;
 	option.uri = `http://${ip}/soap/server_sa/`;
 

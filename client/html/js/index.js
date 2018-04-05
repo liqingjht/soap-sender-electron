@@ -50,6 +50,7 @@ var app = new Vue({
 		"timings": timings,
 		"detailObj": detailObj,
 		'cookie': '',
+		'rawPackage': '',
 
 		"logItems": [],
 		"tableHeader": tableHeader,
@@ -341,6 +342,112 @@ var app = new Vue({
 			}
 			this.timeout = String(timeout);
 		},
+		parsePackage() {
+			let str = this.rawPackage;
+			let warn = (msg) => {this.$Message.warning(msg)};
+			str = str.trim().replace(/\n(^\s*$){2,}/m, '\n');
+			this.rawPackage = str;
+			if(str === '') {
+				warn('Paste HTTP(s) SOAP request package');
+				return;
+			}
+			let lines = str.replace(/\r\n/g, '\n').split('\n');
+			if(lines[0].toLowerCase().startsWith('post')) {
+				lines.shift();
+			}
+			let blank = lines.findIndex(v => v.trim() === '');
+			if(blank === -1) {
+				warn('Can not find blank line in your input package');
+				return;
+			}
+			let headers = lines.slice(0, blank);
+			let body = lines.slice(blank + 1).join('\n');
+			let rawBody = body;
+
+			let reqHeaders = [], method, action;
+			let len = headers.length;
+			for(i=0; i<len; i++) {
+				let header = headers[i];
+				let [key, ...value] = header.split(':');
+				if(value.length === 0) {
+					warn(`Invalid HTTP header format found in line ${i}`);
+					return;
+				}
+				value = value.join(':');
+				value = value.trim();
+				key = key.trim();
+				if(key === '' || value === '') {
+					warn(`Invalid HTTP header format found in line ${i}`);
+					return;
+				}
+				let lowKey = key.toLowerCase();
+				if(['cookie', 'content-length'].includes(lowKey)) {
+					continue;
+				}
+				if(key === 'SOAPAction') {
+					if(/^.+?[a-z0-9]+\s*:\s*\d+#[a-z0-9]+$/i.test(value) === true) {
+						method = value.replace(/^.+?([a-z0-9]+)\s*:\s*\d+#([a-z0-9]+)$/i, '$1');
+						action = value.replace(/^.+?([a-z0-9]+)\s*:\s*\d+#([a-z0-9]+)$/i, '$2');
+					}
+					continue;
+				}
+				reqHeaders.push([key, value]);
+			}
+
+			if(method === undefined || action === undefined) {
+				warn(`Can not find SOAP method and action`);
+				return;
+			}
+
+			if(this.cookie !== '') {
+				reqHeaders.push(['Cookie', this.cookie]);
+			}
+
+			let reqParams = [];
+			body = body.replace(/(<\/?)SOAP-ENV\s*:\s*/ig, '$1');
+			let $ = cheerio.load(body);
+			let notFound = (res) => {
+				if(Boolean(res) === false || res.length === undefined || res.length === 0)
+					return true;
+				return false;
+			}
+			let envelope = $.root().children('envelope');
+			if(notFound(envelope)) {
+				warn('Can not find Envelope in document root');
+				return;
+			}
+			let nodeBody = envelope.children('body');
+			if(notFound(nodeBody)) {
+				warn('Can not find Body in Envelope element');
+				return;
+			}
+			body = nodeBody.html().replace(/<\/?m1\s*:[^<>]+>/gim, '');
+			body = body.replace(/(<)\s*(\/?)\s*([^\s<>]+)(\s+[^<>]+)?\s*(>)/g, '$1$2$3$5');
+			$ = cheerio.load(body);
+			let all = $.root().find('*');
+			all.each((k, v) => {
+				let name = v.name;
+				let pattern = new RegExp(`<\\s*\\/?\\s*(${name})`, 'i');
+				let res = rawBody.match(pattern);
+				if(Boolean(res) === false || !Array.isArray(res) || res.length < 1) {
+					return true;
+				}
+				name = res[0].trim();
+				name = name.replace(/^<\s*\/?\s*(.+)$/, '$1');
+				let val = all.eq(k).html();
+				reqParams.push([name, val]);
+			})
+
+			this.method = method;
+			this.action = action;
+
+			this.$Message.success('Parse HTTP request package successfully');
+			setTimeout(() => {
+				this.reqHeaders = reqHeaders;
+				this.reqParams = reqParams;
+				this.tabPane = 'options';
+			}, 500)
+		},
 
 		// history
 		handleReachBottom: function() {
@@ -409,7 +516,39 @@ var app = new Vue({
 				}
 			});
 		},
+		exportTxt() {
+			if(this.pdfLogs.length === 0) {
+				this.$Message.warning('Select some logs to export');
+				return;
+			}
+			let _this = this;
+			dialog.showOpenDialog({
+				properties: ['openDirectory']
+			}, filePaths => {
+				if(Array.isArray(filePaths) && filePaths.length > 0) {
+					let logs = _this.pdfLogs;
+					let saver = '';
+					let len = logs.length;
+					let eol = os.EOL;
+					for(let i=0; i<len; i++) {
+						saver += mergeLogTxt(logs[i], eol);
+						saver += (i === len -1)? '': `${eol.repeat(4)}${'='.repeat(45)}${eol.repeat(4)}`;;
+					}
+					let cur = new Date();
+					let now = `${cur.getFullYear()}-${cur.getMonth() + 1}-${cur.getDate()}`;
+					let savePath = path.join(filePaths[0], `./Soap-Sender-${now}.txt`);
+					fs.writeFile(savePath, saver, (err) => {
+						if(err) {
+							_this.$Message.error('Occur error when export txt');
+							return;
+						}
+						_this.$Message.success(`Exported ${path.basename(savePath)}`);
+					})
+				}
+			});
+		},
 
+		// APP info and configurations
 		checkUpdate: function(firstLoad) {
 			let _this = this;
 			this.checking = true;

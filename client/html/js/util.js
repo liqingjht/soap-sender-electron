@@ -161,13 +161,20 @@ function formatResponse(txt) {
 	return temp;
 }
 
-function mergeLogTxt(log) {
-	let str = `POST http://${log.ipaddr}/soap/server_sa/ HTTP/${log.httpVersion}\n`;
-	str += log.reqHeader + "\n" + log.reqBody;
-	str += "\n\n---------------------------------------------\n\n";
-	str += `HTTP ${log.httpVersion} ${log.statusCode} ${log.statusMessage}\n`;
-	str += log.resHeader + "\n" + log.resBody;
+function mergeLogTxt(log, eol) {
+	eol = eol === undefined? '\n': eol;
+	let str = `POST http://${log.ipaddr}/soap/server_sa/ HTTP/${log.httpVersion}${eol}`;
+	str += replaceEol(log.reqHeader, eol) + eol + replaceEol(log.reqBody, eol);
+	str += `${eol.repeat(2)}${'-'.repeat(45)}${eol.repeat(2)}`;
+	str += `HTTP ${log.httpVersion} ${log.statusCode} ${log.statusMessage}${eol}`;
+	str += replaceEol(log.resHeader, eol) + eol + replaceEol(log.resBody, eol);
 	return str;
+}
+
+function replaceEol(str, eol) {
+	if(eol === '\n')
+		return str;
+	return str.replace(/\n/g, eol);
 }
 
 function bindMethodAndAction() {
