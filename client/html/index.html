@@ -203,10 +203,10 @@
 								<i-button type="ghost" icon="code" @click="copyResponse"></i-button>
 							</Button-group>
 							<pre v-if="showPretty" id="pretty-response">
-								<code class="language-markup" key="no-reuse-resp-htm"><span v-html="prettyResp"></span></code>
+								<code class="language-markup" key="no-reuse-resp-htm"><span class='package-break-line' v-html="prettyResp"></span></code>
 							</pre>
 							<pre v-if="!showPretty" id="raw-response">
-								<span key="no-reuse-resp-txt">{{responseTxt}}</span>
+								<span key="no-reuse-resp-txt" class='package-break-line'>{{responseTxt}}</span>
 							</pre>
 						</Card>
 					</tab-pane>

@@ -163,6 +163,16 @@ body {
 	background-color: #ff9900;
 	color: #fff;
 }
+
+td.ivu-table-expanded-cell {
+	padding: 10px 20px;
+}
+
+.package-break-line {
+	white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-all;
+}
 /****************/
 .app-info > div {
 	margin-top: 20px;

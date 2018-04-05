@@ -100,7 +100,11 @@ function logsTableHeader() {
 			width: 40,
 			align: 'center',
 			render: (h, params) => {
-				return h("pre", {}, mergeLogTxt(app.logItems[params.index]));
+				return h("pre", {
+					class: {
+						'package-break-line': true
+					}
+				}, mergeLogTxt(app.logItems[params.index]));
 			}
 		},
 		{
