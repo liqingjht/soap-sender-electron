@@ -242,14 +242,6 @@ td.ivu-table-expanded-cell {
 	transform: translateX(400px);
 }
 
-.opt-list-leave-active {
-	height: 32px
-}
-
-.opt-list-leave-to {
-	height: 0px;
-}
-
 .toggle-pretty-enter-active, .toggle-pretty-leave-active {
 	transition: opacity 1s;
 }
