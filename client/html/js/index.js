@@ -272,7 +272,7 @@ var app = new Vue({
 			if(method === "" || action === "") {
 				this.$Message.error("Invalid SOAP method or action");
 			}
-			if(!checkSoapOption(reqHeaders) || !checkSoapOption(reqParams)) {
+			if(!checkSoapOption(this, 'reqHeaders', reqHeaders) || !checkSoapOption(this, 'reqParams', reqParams)) {
 				this.$Message.error("Invalid SOAP package");
 				return false;
 			}

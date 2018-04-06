@@ -82,7 +82,9 @@ function updateRouterInfo(ip, msg) {
 			}
 		}
 		else {
-			app.$Message.warning(msg);
+			if(msg !== undefined) {
+				app.$Message.warning(msg);
+			}
 			vSet(app.routerInfo, ...[
 				["region", "---"],
 				["modelName", "---"],
@@ -94,22 +96,24 @@ function updateRouterInfo(ip, msg) {
 	})
 }
 
-function checkSoapOption(arrs) {
+function checkSoapOption(th, key, arrs) {
 	let len = arrs.length;
 	if(len === 0)
 		return true;
-	for(let i=0; i<len; i++) {
-		let arr = arrs[i];
-		if(arr.length !== 2)
+	let temp = [...arrs];
+	for(let i=0; i<temp.length; i++) {
+		let arr = temp[i];
+		if(!Array.isArray(arr) || arr.length !== 2)
 			return false;
 		if(arr[0] === "" && arr[1] === "") {
-			arrs.splice(i, 1);
+			temp.splice(i, 1);
 			i --;
 			continue;
 		}
-		if(arr[0] === "") {
-			return false;}
+		if(arr[0] === "")
+			return false;
 	}
+	th[key] = temp;
 	return true;
 }
 
