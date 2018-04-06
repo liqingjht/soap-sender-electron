@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "cheerio": "^0.22.0",
+    "clipboard": "^2.0.0",
     "request": "^2.83.0",
     "xml-formatter": "^1.0.1"
   }
