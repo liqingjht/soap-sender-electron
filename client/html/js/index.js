@@ -184,7 +184,7 @@ var app = new Vue({
 						this.$Message.warning("Say somethings, don't be shy");
 						return;
 					}
-					sendComment(package.homepage, comment, (err) => {
+					sendComment(package.homepage, comment, package.version, (err) => {
 						if(err) {
 							this.$Message.error('Send comments failed');
 							return;

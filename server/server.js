@@ -43,8 +43,8 @@ app.get("/getLastVersion", function(req, res, next) {
 })
 
 app.post("/postComment", bodyParser.json(), (req, res, next) => {
-	let {username, comment} = req.body;
-	if(username === undefined || comment === undefined) {
+	let {username, comment, version} = req.body;
+	if(username === undefined || comment === undefined || version === undefined) {
 		res.status(402).end();
 		return;
 	}
@@ -60,6 +60,7 @@ app.post("/postComment", bodyParser.json(), (req, res, next) => {
 	arrs.push({
 		'username': username,
 		'comment': comment,
+		'version': version,
 		'time': (new Date()).toLocaleString()
 	});
 	fs.writeFile(commentFile, JSON.stringify(arrs, null, '\t'), (err) => {});

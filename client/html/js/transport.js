@@ -297,7 +297,7 @@ function getVersion(homepage, callback) {
 	})
 }
 
-function sendComment(homepage, comment, callback) {
+function sendComment(homepage, comment, version, callback) {
 	let option = {};
 	options.url = homepage + "/postComment";
 	option.timeout = 2000;
@@ -306,7 +306,8 @@ function sendComment(homepage, comment, callback) {
 	}
 	options.body = JSON.stringify({
 		'username': os.userInfo().username,
-		'comment': comment
+		'comment': comment,
+		'version': version
 	})
 	postFunc(options, (err) => {
 		callback(err);
