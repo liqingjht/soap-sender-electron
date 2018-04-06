@@ -270,7 +270,7 @@ function addSoapList(method, action, params) {
 
 function isIPFormat(str) {
     str = str.replace(/00(\d)/g, "$1").replace(/0(\d{2})/g, "$1").replace(/0(\d)/g, "$1");
-    if (/^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))){1}$/g.test(str) == false) {
+    if (/^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))){1}(:\d+)?$/g.test(str) == false) {
         return false;
     } else {
         return str;

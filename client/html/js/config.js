@@ -7,6 +7,7 @@ const os = require('os');
 const dns = require('dns');
 const fs = require("fs");
 const path = require("path");
+const {URL} = require("url");
 const format = require('xml-formatter');
 const request = require("request");
 const cheerio = require("cheerio");

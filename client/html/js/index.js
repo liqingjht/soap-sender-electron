@@ -75,7 +75,10 @@ var app = new Vue({
 			return getUserInfo().hostname;
 		},
 		getIPArr: function() {
-			return getLocalIP();
+			let localIP = getLocalIP();
+			let testURL = new URL(package.homepage);
+			localIP.push(testURL.host);
+			return localIP;
 		},
 		loginStatus() {
 			let loginMethod = this.routerInfo.loginMethod;
@@ -122,6 +125,10 @@ var app = new Vue({
 			if(this.cookie.trim() !== '') {
 				this.autoAuth = false;
 			}
+		},
+		/* iview auto-complete on-change event can not work, so watch dutIP and limit react time */
+		dutIP() {
+			this.lazyIPChange();
 		}
 	},
 	methods: {
@@ -204,6 +211,9 @@ var app = new Vue({
 		},
 
 		//basic settings
+		lazyIPChange: _.debounce(function() {
+			this.handleIPChange();
+		}, 1500),
 		handleIPChange: function() {
 			let result = isIPFormat(this.dutIP);
 			if(result === false) {
@@ -214,7 +224,7 @@ var app = new Vue({
 			updateRouterInfo(this.dutIP, "The IP address you input may not access to Router");
 			updateDeviceInfo(this.dutIP);
 		},
-		handlePasswdChange: function(event) {
+		handlePasswdChange: function() {
 			if(this.autoAuth !== true)
 				return;
 			let _this = this;
@@ -222,10 +232,7 @@ var app = new Vue({
 				return;
 			sendAuthForPasswd(this.dutIP, this.passwd, function(err) {
 				if(err) {
-					if(event !== undefined)
-						_this.$Message.warning("The password you input may not correct");
-					else
-						_this.$Message.warning("The default password may not correct");
+					_this.$Message.warning("The password may not correct");
 				}
 				else {
 					_this.$Message.success("Pass the password checking. Already login by Authenticate API");

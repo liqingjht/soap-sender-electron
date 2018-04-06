@@ -67,6 +67,49 @@ app.post("/postComment", bodyParser.json(), (req, res, next) => {
 	res.status(200).end();
 })
 
+app.post("/soap/server_sa/", (req, res, next) => {
+	let soapAction = req.headers['soapaction'];
+	if(soapAction === undefined) {
+		res.status(402).end();
+		return;
+	}
+	let method, action;
+	if(/^.+?[a-z0-9]+\s*:\s*\d+#[a-z0-9]+$/i.test(soapAction) === true) {
+		method = soapAction.replace(/^.+?([a-z0-9]+)\s*:\s*\d+#([a-z0-9]+)$/i, '$1');
+		action = soapAction.replace(/^.+?([a-z0-9]+)\s*:\s*\d+#([a-z0-9]+)$/i, '$2');
+	}
+	else {
+		res.status(402).end();
+		return;
+	}
+	let codes = ['402', '501', '000', '001', '0', '00'];
+	let code = codes[Math.floor((Math.random())*6)];
+	let payload = '';
+	if(action === 'Authenticate') {
+		code = '000';
+	}
+	else if(action === 'SOAPLogin') {
+		res.cookie('jwt_local', createToken(50));
+	}
+	if(method === 'DeviceInfo' && action === 'GetInfo') {
+		payload += '\t<Firmwareversion>1.0.3.16</Firmwareversion>\n';
+		payload += '\t<SerialNumber>SOAPSENDER7568</SerialNumber>\n'
+	}
+	res.set('content-type', 'text/xml; charset="utf-8"');
+	let str = `<?xml version="1.0" encoding="UTF-8"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+	<SOAP-ENV:Body>
+	  <m:${action}Response xmlns:m="urn:NETGEAR-ROUTER:service:${method}:1">${payload}</m:${action}Response>
+	  <ResponseCode>${code}</ResponseCode>
+	</SOAP-ENV:Body>
+  </SOAP-ENV:Envelope>`
+	res.status(200).send(str).end();
+})
+
+app.get("/currentsetting.htm", (req, res, next) => {
+	let str = 'Region=PR\rModel=Example\rInternetConnectionStatus=UP\rSOAPVersion=3.29\rLoginMethod=2.0';
+	res.status(200).send(str).end();
+})
+
 app.get("/getNewTool", function(req, res, next) {
 	let ver = req.query.version;
 	let type = req.query.type;
