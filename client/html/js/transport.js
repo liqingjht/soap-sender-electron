@@ -218,7 +218,7 @@ function postFunc(option, callback) {
 				var result = callback(false, response, body);
 				resolve(result);
 			} else {
-				var result = callback(error, response, body);
+				var result = callback(true, response, body);
 				reject(result === undefined? '': result);
 			}
 		})
@@ -294,5 +294,21 @@ function getVersion(homepage, callback) {
 		else {
 			callback(true);
 		}
+	})
+}
+
+function sendComment(homepage, comment, callback) {
+	let option = {};
+	options.url = homepage + "/postComment";
+	option.timeout = 2000;
+	options.headers = {
+		'Content-Type': 'application/json; charset=UTF-8'
+	}
+	options.body = JSON.stringify({
+		'username': os.userInfo().username,
+		'comment': comment
+	})
+	postFunc(options, (err) => {
+		callback(err);
 	})
 }

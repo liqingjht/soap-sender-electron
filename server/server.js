@@ -6,6 +6,7 @@ const path = require("path");
 
 const port = 7168;
 const appPath = "./app-package/";
+const commentFile = "./comments.json"
 const app = express();
 var tokenList = [];
 
@@ -39,6 +40,30 @@ app.get("/getLastVersion", function(req, res, next) {
 		}
 		res.send(last).end();
 	})
+})
+
+app.post("/postComment", bodyParser.json(), (req, res, next) => {
+	let {username, comment} = req.body;
+	if(username === undefined || comment === undefined) {
+		res.status(402).end();
+		return;
+	}
+	let arrs = [];
+	try {
+		let data = fs.readFileSync(commentFile);
+		let temp = JSON.parse(data);
+		if(Array.isArray(temp)) {
+			arrs = temp;
+		}
+	}
+	catch(err) {/*do nothing*/}
+	arrs.push({
+		'username': username,
+		'comment': comment,
+		'time': (new Date()).toLocaleString()
+	});
+	fs.writeFile(commentFile, JSON.stringify(arrs, null, '\t'), (err) => {});
+	res.status(200).end();
 })
 
 app.get("/getNewTool", function(req, res, next) {

@@ -281,3 +281,13 @@ ul {
     width: 18px;
     height: 35px;
 }
+
+.confirm-model textarea {
+    max-height: 350px;
+}
+
+.window_comment {
+    position: relative;
+    bottom: 2px;
+    right: 7px;
+}

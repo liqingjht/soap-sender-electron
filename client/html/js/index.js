@@ -27,6 +27,7 @@ var app = new Vue({
 		"tmpNavIndex": 0,
 		"winTop": false,
 		"firstLoading": true,
+		'comment': '',
 
 		"dutIP": dutIP,
 		"passwd": config === undefined?  "password": config.passwd,
@@ -153,6 +154,53 @@ var app = new Vue({
 			else if(this.tmpNavIndex === 3) {
 				this.checkUpdate();
 			}
+		},
+		renderComment() {
+			this.$Modal.confirm({
+				okText: 'Send Comments',
+				cancelText: 'Cancel',
+				render: (h) => {
+					return h('i-input', {
+						props: {
+							type: 'textarea',
+							value: this.comment,
+							rows: 5,
+							autofocus: true,
+							placeholder: 'What do you want to say to me...'
+						},
+						class: {
+							'confirm-model': true
+						},
+						on: {
+							input: (val) => {
+								this.comment = val;
+							}
+						}
+					})
+				},
+				onOk: () => {
+					let comment = this.comment.trim();
+					if(comment === '') {
+						this.$Message.warning("Say somethings, don't be shy");
+						return;
+					}
+					sendComment(package.homepage, comment, (err) => {
+						if(err) {
+							this.$Message.error('Send comments failed');
+							return;
+						}
+						this.$Message.success('I got you');
+						this.comment = '';
+					})
+				},
+				onCancel: () => {
+					let comment = this.comment.trim();
+					if(comment === '') {
+						this.$Message.warning("Say somethings, don't be shy");
+						return;
+					}
+				}
+			})
 		},
 
 		//basic settings

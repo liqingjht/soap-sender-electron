@@ -45,6 +45,9 @@
 
 		<div class="title-head">
 			<ul class="action_list">
+				<li class="hvr-grow-shadow window_action" @click="renderComment">
+					<a href="#0" class="window_comment"><i class="fa fa-commenting"></i></a>
+				</li>
 				<li class="hvr-grow-shadow window_action" @click="toggleWinTop">
 					<a href="#1" class="window_lock"><i class="fa" :class="winTop? 'fa-lock': 'fa-unlock-alt'"></i></a>
 				</li>
