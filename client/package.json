@@ -1,9 +1,9 @@
 {
   "name": "Soap-Sender",
-  "version": "1.0.9",
+  "version": "1.0.17",
   "author": "liqingjht",
   "email": "liqingjht@163.com",
-  "homepage": "http://172.17.92.252:7168",
+  "homepage": "http://127.0.0.1:7168",
   "description": "A minimal soap sender desktop app",
   "main": "main.js",
   "scripts": {
