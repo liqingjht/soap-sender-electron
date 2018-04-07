@@ -117,6 +117,8 @@ var app = new Vue({
 			else {
 				this.reqActions = getAllActions(val);
 			}
+			this.prettyResp = '';
+			this.responseTxt = '';
 		},
 		action: function updateParam(val) {
 			let index = this.reqActions.indexOf(val);
@@ -126,6 +128,8 @@ var app = new Vue({
 			else {
 				this.reqParams = getAllParams(val);
 			}
+			this.prettyResp = '';
+			this.responseTxt = '';
 		},
 		cookie() {
 			if(this.cookie.trim() !== '') {
