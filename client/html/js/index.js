@@ -99,6 +99,12 @@ var app = new Vue({
 			if(model === undefined || model.trim() === '' || model === '---')
 				return true;
 			return false;
+		},
+		responseTitle() {
+			let {method, action} = this;
+			if(method.trim() === '' || action.trim() === '')
+				return '';
+			return `${method} : ${action}`;
 		}
 	},
 	watch: {
