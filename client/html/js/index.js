@@ -14,9 +14,9 @@ const keyMapping = {
 	"modelName": "Model Name:",
 	"version": "Firmware Version:",
 	"serialNum": "Serial Number:",
-	"soapVer": "SOAP Version",
-	"loginMethod": "Login Method",
-	"region": "Region",
+	"soapVer": "SOAP Version:",
+	"loginMethod": "Login Method:",
+	"region": "Region:",
 	"connection": "Internet Connection:"
 }
 
