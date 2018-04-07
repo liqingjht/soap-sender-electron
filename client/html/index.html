@@ -67,7 +67,7 @@
 						<Card class="setting-card">
 							<p slot="title">Basic Settings</p>
 							<div class="one-input">
-								<div>IP Address</div>
+								<div>IP Address (and port)</div>
 								<auto-complete
 									v-model.trim="dutIP"
 									:data="getIPArr"
@@ -103,7 +103,7 @@
 								</div>
 							</div>
 							<div class="one-input">
-								<div>Auto Send Configuration Start/Finish</div>
+								<div>Auto Send Configuration Started/Finished</div>
 								<div>
 									<i-switch v-model="autoStartEnd">
 										<Icon type="android-done" slot="open"></Icon>
@@ -112,11 +112,11 @@
 								</div>
 							</div>
 							<div class="one-input">
-								<div>Login by SOAPLogin API</div>
+								<div>Login via SOAPLogin API</div>
 								<div><i-button type="primary" style='width: 115px;' @click="soapLogin" :disabled="loginStatus">Login</i-button></div>
 							</div>
 							<div class="one-input">
-								<div>Logout by SOAPLogout API</div>
+								<div>Logout via SOAPLogout API</div>
 								<div><i-button type="primary" style='width: 115px;' @click="soapLogout" :disabled="logoutStatus">Logout</i-button></div>
 							</div>
 						</Card>
@@ -352,7 +352,7 @@
 				<br><hr width="98%"><br>
 				<div style="text-align: center">
 					<div style="margin-bottom: 20px;">
-						<i-button type="primary" @click="checkUpdate" :disabled="checking">Check Update</i-button>
+						<i-button type="primary" @click="checkUpdate" :disabled="checking" style='width: 145px;'>Check Update</i-button>
 					</div>
 					<div v-if="checking === false">
 						<div v-if="!checkUpdateError">
@@ -361,7 +361,7 @@
 							<div v-else>You're up to date! Soap-Sender V{{version}} is the newest version available.</div>
 						</div>
 						<div v-else>
-							<div>Error to check update.</div>
+							<div>Error to check updating.</div>
 						</div>
 					</div>
 					<div v-else><div>&nbsp;</div></div>
@@ -372,11 +372,11 @@
 				<div class="app-info" style="margin-left: 46px;">
 					<div>
 						<i-button type="error" style='width: 145px;' @click="clearLog">Clear History</i-button>
-						<span>(Notice that it will clear all history)</span>
+						<span>(Notice that it will clear all histories)</span>
 					</div>
 					<div>
 						<i-button type="warning" style='width: 145px;' @click="resetConfig">Reset Configurations</i-button>
-						<span>(Including configuration of auto action、password and SOAP list)</span>
+						<span>(Including configurations of auto actions、 timeout、 password and SOAP list)</span>
 					</div>
 				</div>
 
@@ -385,7 +385,7 @@
 				<Row>
 					<i-col span="4">
 						<div class="app-info" style="margin-left: 46px;">
-							<div><i-button type="primary" style='width: 145px;' @click="importLog">Import History</i-button></div>
+							<div><i-button type="primary" style='width: 145px;' @click="importLog">Import Histories</i-button></div>
 							<div><i-button type="primary" style='width: 145px;' @click="importList">Import SOAP List</i-button></div>
 						</div>
 					</i-col>
