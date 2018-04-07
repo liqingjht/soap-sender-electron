@@ -522,6 +522,15 @@ var app = new Vue({
 				this.tabPane = 'options';
 			}, 500)
 		},
+		formatTiming(t) {
+			let temp = parseInt(t);
+			if(isNaN(t))
+				return '';
+			if(temp >= 1000) {
+				return (parseFloat(t)/1000).toFixed(3) + ' (s)';
+			}
+			return t + ' (ms)';
+		},
 
 		// history
 		handleReachBottom: function() {

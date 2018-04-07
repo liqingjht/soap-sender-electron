@@ -237,16 +237,31 @@
 					<tab-pane label="HTTP Details" name="details">
 						<Card class="request-card" style="overflow: auto;">
 							<Row :gutter="16">
-								<i-col span="5">
+								<i-col span="4">
 									<Timeline>
-										<timeline-item color="green">DNS Lookup ({{timings.lookup}} ms)</timeline-item>
-										<timeline-item color="green">Socket ({{timings.socket}} ms)</timeline-item>
-										<timeline-item color="green">Connect ({{timings.connect}} ms)</timeline-item>
-										<timeline-item color="green">Response ({{timings.response}} ms)</timeline-item>
-										<timeline-item color="blue">End ({{timings.end}} ms)</timeline-item>
+										<timeline-item color="green">
+											<p class='timing-title'>DNS Lookup</p>
+											<p class='timing-body'>{{formatTiming(timings.lookup)}}</p>
+										</timeline-item>
+										<timeline-item color="green">
+											<p class='timing-title'>Socket</p>
+											<p class='timing-body'>{{formatTiming(timings.socket)}}</p>
+										</timeline-item>
+										<timeline-item color="green">
+											<p class='timing-title'>Connect</p>
+											<p class='timing-body'>{{formatTiming(timings.connect)}}</p>
+										</timeline-item>
+										<timeline-item color="green">
+											<p class='timing-title'>Response</p>
+											<p class='timing-body'>{{formatTiming(timings.response)}}</p>
+										</timeline-item>
+										<timeline-item color="blue">
+											<p class='timing-title'>End</p>
+											<p class='timing-body'>{{formatTiming(timings.end)}}</p>
+										</timeline-item>
 									</Timeline>
 								</i-col>
-								<i-col span="19">
+								<i-col span="20">
 									<collapse accordion>
 										<panel name="0">
 											<span>Request Header</span>

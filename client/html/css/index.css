@@ -131,7 +131,15 @@ body {
 }
 
 .ivu-timeline-item:not(:last-child) {
-	padding-bottom: 107px;
+	padding-bottom: 80px;
+}
+
+.timing-title {
+	font-weight: 600;
+}
+
+.timing-body {
+	margin-top: 8px;
 }
 
 .ivu-timeline-item-content {
