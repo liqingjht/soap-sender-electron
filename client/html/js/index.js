@@ -384,11 +384,22 @@ var app = new Vue({
 			this.optSending = !this.optSending;
 		},
 		togglePretty: function() {
+			let id = this.showPretty? "#pretty-response": "#raw-response";
+			let str = $(id).text();
+			if(str.trim() === '') {
+				this.$Message.warning("Send a SOAP package firstly");
+				return;
+			}
 			this.showPretty = !this.showPretty;
 		},
 		copyResponse: function() {
 			let id = this.showPretty? "#pretty-response": "#raw-response";
-			clipboard.writeText($(id).text());
+			let str = $(id).text();
+			if(str.trim() === '') {
+				this.$Message.warning("Send a SOAP package firstly");
+				return;
+			}
+			clipboard.writeText(str);
 			this.$Message.success("Copy content to clipboard successfully");
 		},
 		checkTimeout() {
