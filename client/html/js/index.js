@@ -765,6 +765,13 @@ var app = new Vue({
 		},
 		openSavePath() {
 			shell.showItemInFolder(this.oldAppPath);
+		},
+		sendMail() {
+			if(this.checkUpdateError) {
+				shell.openExternal(`mailto:${this.email}?subject=Soap-Sender-V${this.version}`);
+				return;
+			}
+			this.renderComment();
 		}
 	},
 	created: function() {

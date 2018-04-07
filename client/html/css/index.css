@@ -202,6 +202,10 @@ td.ivu-table-expanded-cell {
 	margin-top: 20px;
 }
 
+.auth-email:hover {
+	color: #2db7f5;
+}
+
 .app-info .hvr-float-shadow {
 	cursor: pointer;
 }
