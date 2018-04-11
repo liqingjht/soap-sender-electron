@@ -171,6 +171,12 @@ var app = new Vue({
 			else if(this.tmpNavIndex === 3) {
 				this.checkUpdate();
 			}
+			if(this.tmpNavIndex === 0) {
+				this.checkConnection();
+			}
+			else {
+				this.checkConnection(-1);
+			}
 		},
 		renderComment() {
 			this.$Modal.confirm({
@@ -248,6 +254,18 @@ var app = new Vue({
 					_this.$Message.success("Pass the password checking. Already login by Authenticate API");
 				}
 			});
+		},
+		checkConnection(flag) { // -1 to stop
+			if(intervalId !== undefined && flag === -1) {
+				clearInterval(intervalId);
+			}
+			if(flag === -1 || isIPFormat(this.dutIP) === false) {
+				return;
+			}
+			intervalId = setInterval(() => {
+				updateRouterInfo(this.dutIP);
+				updateDeviceInfo(this.dutIP);
+			}, 5000)
 		},
 		soapLogin() {
 			sendSoapLogin(this.dutIP, this.passwd, (err, resp) => {
@@ -781,6 +799,7 @@ var app = new Vue({
 		if(this.dutIP.trim() !== "") {
 			updateRouterInfo(this.dutIP);
 			updateDeviceInfo(this.dutIP);
+			this.checkConnection();
 		}
 
 		this.$Message.config({

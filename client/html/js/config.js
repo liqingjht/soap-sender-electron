@@ -31,6 +31,7 @@ catch(err) {
 
 var sessionID = "DNI-Soap-Sender-Session-ID-X";
 var config = undefined;
+let intervalId;
 
 var soapList = [];
 
