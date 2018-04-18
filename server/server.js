@@ -6,39 +6,20 @@ const path = require("path");
 
 const port = 7168;
 const appPath = "./app-package/";
-const commentFile = "./comments.json"
+const commentFile = "./comments.json";
 const app = express();
 var tokenList = [];
+let count = 0;
 
 app.use(express.static("image"));
 
 app.get("/getLastVersion", function(req, res, next) {
-	fs.readdir(appPath, function(error, files) {
-		if(error) {
-			res.send("Error");
+	getVersion((err, last) => {
+		if(err) {
+			res.send('error');
 			return;
 		}
-		let vers = [];
-		for(let i=0; i<files.length; i++) {
-			let file = files[i];
-			if(/^soap-sender-(64|32)-V\d+\.\d+\.\d+.zip$/.test(file) === true) {
-				let ver = file.replace(/^soap-sender-(64|32)-V(\d+\.\d+\.\d+).zip$/, "$2");
-				vers.push(ver);
-			}
-		}
-		if(vers.length === 0) {
-			res.send("Error");
-			return;
-		}
-		let last = vers[0];
-		for(let i=0; i<vers.length; i++) {
-			let v = vers[i].split(".");
-			let l = last.split(".");
-			if(parseInt(v[0]) > parseInt(l[0]) || parseInt(v[1]) > parseInt(l[1]) || parseInt(v[2]) > parseInt(l[2])) {
-				last = vers[i];
-			}
-		}
-		res.send(last).end();
+		res.status(200).send(last).end();
 	})
 })
 
@@ -110,11 +91,55 @@ app.get("/currentsetting.htm", (req, res, next) => {
 	res.status(200).send(str).end();
 })
 
+function getVersion(callback) {
+	fs.readdir(appPath, function(error, files) {
+		if(error) {
+			res.send("Error");
+			callback(error);
+			return;
+		}
+		let vers = files.filter(v => { return /^\d+\.\d+.\d+$/.test(v)});
+		/*for(let i=0; i<files.length; i++) {
+			let file = files[i];
+			if(/^Soap-Sender-(64|32)-V\d+\.\d+\.\d+.zip$/.test(file) === true) {
+				let ver = file.replace(/^Soap-Sender-(64|32)-V(\d+\.\d+\.\d+).zip$/, "$2");
+				vers.push(ver);
+			}
+		}*/
+		if(vers.length === 0) {
+			callback(true);
+			return;
+		}
+		let last = vers[0];
+		for(let i=1; i<vers.length; i++) {
+			let n = vers[i].split(".");
+			let c = last.split(".");
+			let [c0, c1, c2] = c.map(v => parseInt(v));
+			let [n0, n1, n2] = n.map(v => parseInt(v));
+			if((n0 > c0) || (n0 === c0 && n1 > c1) || (n0 === c0 && n1 === c1 && n2 > c2)) {
+				last = vers[i];
+			}
+		}
+		callback(false, last);
+	})
+}
+
 app.get("/getNewTool", function(req, res, next) {
-	let ver = req.query.version;
-	let type = req.query.type;
-	let file = "soap-sender-" + type + "-V" + ver + ".zip";
-	res.download(path.join(process.cwd(), appPath + file), file);
+	let platform = req.query.platform;
+	let arch = req.query.arch;
+	if(['win', 'linux', 'mac'].includes(platform) === false || (arch !== '64' && arch !== '32')) {
+		res.status(404);
+		return;
+	}
+	getVersion((err, last) => {
+		if(err) {
+			res.status(501).end();
+			return;
+		}
+		let file = `Soap-Sender-${platform}-${arch}-V${last}.zip`;
+		res.download(path.join(process.cwd(), `${appPath}/${last}/${file}`), file);
+		console.log(`download ${file}, total ${++count} times`);
+	})
 })
 
 
