@@ -1,75 +1,65 @@
-var { app, BrowserWindow, ipcMain, shell } = require('electron');
-var path = require('path');
-var reUrl = require('url');
-var fs = require("fs");
-var os = require("os");
-var crypto = require('crypto');
-var request = require('request');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
+const path = require('path');
+const reUrl = require('url');
+const fs = require("fs");
+const os = require("os");
+const crypto = require('crypto');
+const request = require('request');
 
-var projectInfo = new Object();
+let mainWindow;
 
-var mainWindow;
+app.on('ready', () => {
+	mainWindow = new BrowserWindow({
+		width: 1200,
+		height: 800,
+		show: false,
+		center: true,
+		resizable: false,
+		frame: false
+	})
 
-function createWindow() {
-    mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 800,
-        show: false,
-        center: true,
-        resizable: false,
-        frame: false
-    })
+	mainWindow.once('ready-to-show', () => {
+		mainWindow.show()
+	})
 
-    mainWindow.once('ready-to-show', function() {
-        mainWindow.show()
-    })
-
-    mainWindow.loadURL(reUrl.format({
-        pathname: path.join(__dirname, "html/index.html"),
-        protocol: 'file:',
-        slashes: true
-    }))
+	mainWindow.loadURL(reUrl.format({
+		pathname: path.join(__dirname, "html/index.html"),
+		protocol: 'file:',
+		slashes: true
+	}))
 
 	//mainWindow.webContents.openDevTools();
-	mainWindow.on('close', function() {
+	mainWindow.on('close', () => {
 		mainWindow.webContents.send("save-settings");
 	})
-    mainWindow.on('closed', function() {
-        mainWindow = null
-    })
-}
+	mainWindow.on('closed', () => {
+		mainWindow = null
+	})
+});
 
-app.on('ready', createWindow);
-
-app.on('window-all-closed', function() {
+app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
 })
 
-app.on('activate', function() {
-    if (mainWindow === null) {
-        createWindow()
-    }
-})
-
-ipcMain.on('close-main-window', function() {
+ipcMain.on('close-main-window', () => {
     app.quit();
 });
 
-ipcMain.on('top-main-window', function(event, flag) {
+ipcMain.on('top-main-window', (event, flag) => {
     mainWindow.setAlwaysOnTop(flag);
 });
 
-ipcMain.on('mini-main-window', function() {
+ipcMain.on('mini-main-window', () => {
     mainWindow.minimize();
 });
 
-ipcMain.on('update-settings', function(event, config) {
+ipcMain.on('update-settings', (event, config) => {
 	saveConfig(config);
 });
 
-ipcMain.on('print-pdf', function(event, pdfLogs) {
+ipcMain.on('print-pdf', (event, pdfLogs) => {
 	let win = new BrowserWindow({
 		show: false,
 		width: 800,
